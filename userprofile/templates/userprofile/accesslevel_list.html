@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h4 class="heading_a uk-margin-bottom">Access Level</h4>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'profile:access_create' %}" class="md-btn md-btn-success uk-float-right">Add Access Level</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                       
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                
+                                <td><a href="{% url 'profile:access_edit' item.id %}"  class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}

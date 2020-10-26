@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h4 class="heading_a uk-margin-bottom">County List</h4>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'conf:county_create' %}" class="md-btn md-btn-success uk-float-right">Add County</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table  id="dt_tableTools"  class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>District</th>
+                       <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.district }}</td>
+                               
+                                <td>
+                                     <a href="{% url 'conf:county_edit' item.id %}"  class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a>
+                                    <!--<a href="#"><i class="md-icon material-icons">&#xE88F;</i></a>-->
+                                    
+                                </td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="md-fab-wrapper md-fab-in-card">
+                <a class="md-fab md-fab-wave" href="#"><i class="material-icons">&#xE52E;</i></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+ <!-- datatables -->
+    <script src="{% static 'bower_components/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <!-- datatables colVis-->
+    <script src="{% static 'bower_components/datatables-colvis/js/dataTables.colVis.js' %}"></script>
+<!-- datatables tableTools-->
+    <script src="{% static 'bower_components/datatables-tabletools/js/dataTables.tableTools.js' %}"></script>
+    <!-- datatables custom integration -->
+    <script src="{% static 'assets/js/custom/datatables_uikit.min.js' %}"></script>
+
+    <!--  datatables functions -->
+    <script src="{% static 'assets/js/pages/plugins_datatables.min.js' %}"></script>
+{% endblock %}

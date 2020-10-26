@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h4 class="heading_a uk-margin-bottom">Users</h4>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'profile:user_create' %}" class="md-btn md-btn-success uk-float-right">Add User</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <!--<div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-medium-1-2 uk-float-right">
+                    <div class="uk-input-group">
+                        <div class="md-input-wrapper"><label>Search</label><input type="text" class="md-input"><span class="md-input-bar"></span></div>
+                        <span class="uk-input-group-addon">
+                            <a href="#"><i class="uk-icon-search uk-icon-small"></i></a>
+                        </span>
+                    </div>
+                </div>
+            <hr>
+            </div>-->
+            
+            <div class="uk-overflow-container">
+                <table id="dt_tableTools" class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Msisdn</th>
+                        <th>Active</th>
+                        <th>Super User</th>
+                        <th>Access Level</th>
+                        <th>Create Date</th>
+                        <th>.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.user.username }}</td>
+                                <td>{{ item.user.email }}</td>
+                                <td>{{ item.msisdn }}</td>
+                                <td>{{ item.user.is_active }}</td>
+                                <td>{{ item.user.is_superuser }}</td>
+                                <td>{{ item.access_level }}</td>
+                                <td>{{ item.user.date_joined }}</td>
+                                
+                                <td><a href="{% url 'profile:user_edit' item.user.id %}">Edit</a></td>
+                                <td><a href="{% url 'profile:admin_password_edit' item.user.id %}">Password</a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+ <!-- datatables -->
+    <script src="{% static 'bower_components/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <!-- datatables colVis-->
+    <script src="{% static 'bower_components/datatables-colvis/js/dataTables.colVis.js' %}"></script>
+<!-- datatables tableTools-->
+    <script src="{% static 'bower_components/datatables-tabletools/js/dataTables.tableTools.js' %}"></script>
+    <!-- datatables custom integration -->
+    <script src="{% static 'assets/js/custom/datatables_uikit.min.js' %}"></script>
+
+    <!--  datatables functions -->
+    <script src="{% static 'assets/js/pages/plugins_datatables.min.js' %}"></script>
+{% endblock %}

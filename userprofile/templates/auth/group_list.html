@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h4 class="heading_a uk-margin-bottom">Groups</h4>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'profile:group_create' %}" class="md-btn md-btn-success uk-float-right">Add Group</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Group</th>
+                        <th>Permision</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td></td>
+                                <td><a href="{% url 'profile:group_edit' item.id %}">Edit</a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="md-fab-wrapper md-fab-in-card">
+                <a class="md-fab md-fab-wave" href="#"><i class="material-icons">&#xE52E;</i></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

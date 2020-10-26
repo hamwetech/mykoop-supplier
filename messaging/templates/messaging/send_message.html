@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_custom_tags %}
+
+{% block style %}
+    <!-- additional styles for plugins -->
+     <!-- kendo UI -->
+    <link rel="stylesheet" href="{% static 'bower_components/kendo-ui/styles/kendo.common-material.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bower_components/kendo-ui/styles/kendo.material.min.css' %}"/>
+    <style>
+        .k-combobox{
+            width: 100% !important;
+        }
+    </style>
+    
+{% endblock %}
+{% block page_content %}
+<h3 class="heading_b uk-margin-bottom">Member Share Transaction</h3>
+   <div class="md-card">
+        <div class="md-card-content">
+            <form method="POST" class="new-event-form" role="role" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include "error_template.html" with form=form %}
+                {{ errors }}
+                <div class="uk-grid">
+                    <div class="uk-width-1-1" >
+                      {% include "form/field.html" with field=form.message input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.sender_id input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.msisdn input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                    </div> 
+                </div>
+                <div class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-1-1" >
+                      {% include "form/field.html" with field=form.msisdn_file input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.sheetno input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.startrow input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.msisdn_col input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.name_col input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.field3_col input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                      {% include "form/field.html" with field=form.field4_col input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                    </div> 
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <button type="submit" class="md-btn md-btn-success">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+ <!-- page specific plugins -->
+    <!-- ionrangeslider -->
+    <script src="{% static 'bower_components/ion.rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+
+  <!-- inputmask-->
+    <script src="{% static 'bower_components/jquery.inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
+    <!--  forms advanced functions -->
+    <script src="{% static 'assets/js/pages/forms_advanced.min.js' %}"></script>
+    
+
+    <!--  form file input functions -->
+    <script src="{% static 'assets/js/pages/forms_file_input.min.js' %}"></script>
+    
+    <!-- kendo UI -->
+    <script src="{% static 'assets/js/kendoui_custom.min.js' %}"></script>
+
+    <!--  kendoui functions -->
+    <script src="{% static 'assets/js/pages/kendoui.min.js' %}"></script>
+    
+{% endblock %}

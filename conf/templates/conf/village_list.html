@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load el_pagination_tags %}
+{% block style %}
+<style type="text/css">
+    .row-pagination{
+        margin: 15px;
+    }
+    .row-pagination a{
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    .endless_page_current{
+        background: #7cb342;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+</style>
+{% endblock %}
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h4 class="heading_a uk-margin-bottom">Village List</h4>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'conf:village_create' %}" class="md-btn md-btn-success uk-float-right">Add Village</a>
+            <a href="{% url 'conf:location_upload' %}" class="md-btn md-btn-success uk-float-right">Upload File</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="dt-uikit-header">
+                <form action="" method="get">
+                    <div class="uk-grid">
+                        <div class="uk-width-medium-1-1">
+                            <div class="uk-input-group">
+                                <div class="uk-grid">
+                                <div class="uk-width-medium-1-2">
+                                    <label>Village:</label>
+                                    <input type="text" name="village" class="md-input" />
+                                </div>
+                                <div class="uk-width-medium-1-2">
+                                    <label>Sub Country:</label>
+                                    <input type="text" name="subcounty" class="md-input" />
+                                </div>
+                                <div class="uk-width-medium-1-2">
+                                    <label>County:</label>
+                                    <input type="text" name="county" class="md-input" />
+                                </div>
+                                <div class="uk-width-medium-1-2">
+                                    <label>District:</label>
+                                    <input type="text" name="district" class="md-input" />
+                                </div>
+                                 </div>
+                                <span class="uk-input-group-addon">
+                                    <button type="submit" class="md-btn"><i class="material-icons">search</i></button>
+                                </span>
+                                <span class="uk-input-group-addon">
+                                    <a href="." class="md-btn"><i class="material-icons">refresh</i></a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <p></p>
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Sub County</th>
+                       <th>County</th>
+                       <th>District</th>
+                       <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                       {% paginate object_list %}{% get_pages %}
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.sub_county }}</td>
+                                <td>{{ item.sub_county.county }}</td>
+                                <td>{{ item.sub_county.county.district }}</td>
+                               
+                                <td>
+                                     <a href="{% url 'conf:subcounty_edit' item.id %}"  class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a>
+                                    <!--<a href="#"><i class="md-icon material-icons">&#xE88F;</i></a>-->
+                                    
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+           <!-- {% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+  {% endif %}-->
+            <div class="row-pagination">
+                Showing entries
+                {{ pages.current_start_index }}-{{ pages.current_end_index }} of
+                {{ pages.total_count }}.
+                {# Just print pages to render the Digg-style pagination. #}
+                {% show_pages %}
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% load my_custom_tags %}
+<div class="uk-form-row">
+    
+    {% if input_group_add_on or input_group_add_on_after %}
+         <div class="uk-input-group">
+    {% endif %}
+    
+    {% if not hide_label and not field.is_hidden and not field|is_checkbox %}
+        {% if input_group_add_on %}
+            <span class="uk-input-group-addon">{{ input_group_add_on }}</span>
+        {% endif %}
+   
+   
+        <label class="control-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+            {% if field.field.required %}<span title="Required field" class="required">*</span>{% endif %}
+        </label>
+    {% endif %}
+    
+    {{ field }}
+    
+    {% if input_is_checkbox or field|is_checkbox %}
+        <label  class="inline-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+            {% if field.field.required %}
+                <span title="Required field" class="required">*</span>
+            {% endif %}
+        </label>
+    {% endif %}
+    
+    {% if input_group_add_on_after %}
+        <span class="uk-input-group-addon">{{ input_group_add_on_after }}</span>
+    {% endif %}
+
+    {% if input_group_add_on or input_group_add_on_after %}
+        </div>
+    {% endif %}
+    
+    {% if field.help_text %}
+        {% if not hide_label and not field.is_hidden %}
+            <span class="uk-form-help-block">{{ field.help_text|safe }}</span>
+        {% endif %}
+    {% endif %}
+    
+    {% if field.errors %}
+        <div class="parsley-errors-list filled" id="parsley-id-8"><span class="parsley-required">{% for error in field.errors %}{{ error }}{% endfor %}</span></div>
+    {% endif %}
+ </div>
