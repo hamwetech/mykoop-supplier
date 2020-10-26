@@ -4,6 +4,9 @@ from supplier.views.items import *
 from supplier.views.supplier import SupplierListView, SupplierCreateView, SupplierUpdateView, SupplierUserListView, SupplierUserCreate
 
 urlpatterns = [
+    url(r'category/edit/(?P<pk>[\w]+)/$', CategoryUpdateView.as_view(), name='category_update'),
+    url(r'category/list/$', CategoryListView.as_view(), name='category_list'),
+    url(r'category/create/$', CategoryCreateView.as_view(), name='category_create'),
     url(r'item/price/(?P<pk>[\w]+)/$', get_item_price, name='item_price'),
     url(r'item/edit/(?P<pk>[\w]+)/$', ItemUpdateView.as_view(), name='item_update'),
     url(r'item/list/$', ItemListView.as_view(), name='item_list'),

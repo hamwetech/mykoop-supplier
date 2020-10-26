@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'conf',
     'userprofile',
     'dashboard',
-    'supplier'
+    'supplier',
+    'agrodealer',
+    'order'
 ]
 
 MIDDLEWARE = [

@@ -30,26 +30,26 @@ class ExtraContext(object):
 
 class SupplierListView(ExtraContext, ListView):
     model = Supplier
-    extra_context = {'active': ['_config', '__district']}
+    extra_context = {'active': ['_supplier', '__supplier']}
 
 
 class SupplierCreateView(ExtraContext, CreateView):
     model = Supplier
     form_class = SupplierForm
-    extra_context = {'active': ['_supplier', '__spplier']}
+    extra_context = {'active': ['_supplier', '__supplier']}
     success_url = reverse_lazy('supplier:supplier_list')
 
 
 class SupplierUpdateView(ExtraContext, UpdateView):
     model = Supplier
     form_class = SupplierForm
-    extra_context = {'active': ['_supplier', '__spplier']}
+    extra_context = {'active': ['_supplier', '__supplier']}
     success_url = reverse_lazy('supplier:supplier_list')
 
 
 class SupplierUserListView(ExtraContext, ListView):
     model = SupplierUser
-
+    
     def get_context_data(self, **kwargs):
         context = super(SupplierUserListView, self).get_context_data(**kwargs)
         pk = self.kwargs.get('supplier')

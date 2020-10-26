@@ -23,7 +23,7 @@ from django.contrib.auth import authenticate
 
 from userprofile.models import Profile
 from conf.models import District, County, SubCounty, Village
-from supplier.models import Supplier, Item, OrderItem
+from supplier.models import Supplier, Item
 from apiv1.serializers import *
 
 from django.shortcuts import render

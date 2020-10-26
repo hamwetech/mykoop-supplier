@@ -10,8 +10,8 @@ from django.views.generic import ListView, View, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
 from conf.utils import log_debug, log_error
-from ..models import Supplier, SupplierUser, Item
-from ..forms import SupplierForm, ItemForm
+from ..models import Supplier, SupplierUser, Item, Category
+from ..forms import SupplierForm, ItemForm, CategoryForm
 
 from django.contrib.auth.models import User
 
@@ -20,29 +20,48 @@ class ExtraContext(object):
 
     def get_context_data(self, **kwargs):
         context = super(ExtraContext, self).get_context_data(**kwargs)
-        context['active'] = ['_supplier']
-        context['title'] = 'Supplier'
+        context['active'] = ['__item']
+        context['title'] = 'Item'
         context.update(self.extra_context)
         return context
+    
+
+class CategoryCreateView(ExtraContext, CreateView):
+    model = Category
+    form_class = CategoryForm
+    extra_context = {'active': ['_union_prod', '__category']}
+    success_url = reverse_lazy('supplier:category_list')
+
+
+class CategoryUpdateView(ExtraContext, UpdateView):
+    model = Category
+    form_class = CategoryForm
+    extra_context = {'active': ['_union_prod', '__category']}
+    success_url = reverse_lazy('supplier:category_list')
+
+
+class CategoryListView(ExtraContext, ListView):
+    model = Category
+    extra_context = {'active': ['_union_prod', '__category']}    
 
 
 class ItemCreateView(ExtraContext, CreateView):
     model = Item
     form_class = ItemForm
-    extra_context = {'active': ['_union_prod', '__Item']}
+    extra_context = {'active': ['_union_prod', '__item']}
     success_url = reverse_lazy('supplier:item_list')
 
 
 class ItemUpdateView(ExtraContext, UpdateView):
     model = Item
     form_class = ItemForm
-    extra_context = {'active': ['_union_prod', '__Item']}
+    extra_context = {'active': ['_union_prod', '__item']}
     success_url = reverse_lazy('supplier:item_list')
 
 
 class ItemListView(ExtraContext, ListView):
     model = Item
-    extra_context = {'active': ['_union_prod', '__Item']}
+    extra_context = {'active': ['_union_prod', '__item']}
 
 
 def get_item_price(request, pk):
