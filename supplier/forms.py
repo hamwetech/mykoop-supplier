@@ -6,7 +6,7 @@ from supplier.models import Supplier, SupplierUser, Item, Category
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
-        fields = ['name']
+        exclude = ['create_date', 'update_date']
 
 
 class ItemForm(forms.ModelForm):

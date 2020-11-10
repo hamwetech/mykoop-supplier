@@ -16,7 +16,4 @@ urlpatterns = [
     url(r'list/$', SupplierListView.as_view(), name='supplier_list'),
     url(r'add/$', SupplierCreateView.as_view(), name='supplier_create'),
     url(r'edit/(?P<pk>[\w]+)/$', SupplierUpdateView.as_view(), name='supplier_edit'),
-
-
-
 ]

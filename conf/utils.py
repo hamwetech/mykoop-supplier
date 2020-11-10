@@ -10,7 +10,7 @@ from django.utils.text import capfirst
 from django.utils.encoding import force_text
 from conf.models import MessageTemplates, SystemSettings
 
-log = logging.getLogger("umis")
+log = logging.getLogger("mykoop-supplier")
 PHONE_REGEX = re.compile(r'^(0|256|\+256|)(3|4|7)([0-9])(\d{7,7})$')
 
 def log_error():

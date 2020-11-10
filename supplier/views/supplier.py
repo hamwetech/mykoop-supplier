@@ -105,7 +105,8 @@ class SupplierUserCreate(View):
                         if not instance:
                             user.set_password(user.password)
                         user.save()
-                        profile_form = UserProfileForm(request.POST, instance=user.profile)
+                        profile_form.save(commit=False)
+                        profile_form.access_level = get_object_or_404(AccessLevel, name='SUPPLIER')
                         profile_form.save()
                         inst_s = Supplier.objects.get(pk=supplier)
                         SupplierUser.objects.create(supplier=inst_s, user=user)

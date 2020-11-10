@@ -18,7 +18,9 @@ from django.conf.urls.static import static
 from django.conf.urls import url, include
 from django.contrib import admin
 from conf import urls as conf_urls
+from agrodealer import urls as agrodealer_url
 from supplier import urls as supplier_url
+from order import urls as order_url
 from userprofile import urls as profile_urls
 from apiv1 import urls as api_urls
 
@@ -33,7 +35,9 @@ handler403 = Handle403.as_view()
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^conf/', include(conf_urls, namespace='conf')),
+    url(r'^agrodealer/', include(agrodealer_url, namespace='agrodealer')),
     url(r'^supplier/', include(supplier_url, namespace='supplier')),
+    url(r'^order/', include(order_url, namespace='order')),
     url(r'^profile/', include(profile_urls, namespace='profile')),
     url(r'^apiv1/', include(api_urls, namespace='api')),
     url(r'^login/$', LoginView.as_view(), name='login'),

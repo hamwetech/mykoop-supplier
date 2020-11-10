@@ -118,32 +118,50 @@
                     </a>
                 </li>
                 <hr>
-
+                {% if request.user.is_superuser %}
                 <li {% if '_supplier' in active %}class="current_section"{% endif %} title="Supplier">
                     <a href="{% url 'supplier:supplier_list' %}">
                         <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
                         <span class="menu_title">Supplier</span>
                     </a>
                 </li>
-                <li {% if '__item' in active %}class="current_section"{% endif %} title="Supplier">
-                    <a href="{% url 'supplier:item_list' %}">
-                        <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
-                        <span class="menu_title">Items</span>
-                    </a>
-                </li>
-                <li {% if '__order' in active %}class="current_section"{% endif %} title="Supplier">
-                    <a href="{% url 'supplier:item_list' %}">
-                        <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
-                        <span class="menu_title">Order</span>
-                    </a>
-                </li>
+                {% endif %}
+              
+                {% if request.user.profile.access_level.name == "SUPPLIER" or request.user.is_superuser %}
+                    <li {% if '__item' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'supplier:item_list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">Items</span>
+                        </a>
+                    </li>
+                    <li {% if '__order' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'order:list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">Order</span>
+                        </a>
+                    </li>
+                {% endif %}
                 
-                <li {% if '_agrodealer' in active %}class="current_section"{% endif %} title="Supplier">
-                    <a href="{% url 'supplier:item_list' %}">
-                        <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
-                        <span class="menu_title">AgroDealers</span>
-                    </a>
-                </li>
+                {% if  request.user.profile.access_level.name == 'AGRODEALER' or  request.user.is_superuser  %}
+                    <li {% if '_agrodealer' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'agrodealer:list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">AgroDealers</span>
+                        </a>
+                    </li>
+                     <li {% if '_agrodealer_items' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'agrodealer:item_list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">AgroDealers Items</span>
+                        </a>
+                    </li>
+                    <li {% if '_agrodealer_order' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'order:order_list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">AgroDealers Order</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if request.user.is_superuser %}
                  <li>
                     <a href="#">

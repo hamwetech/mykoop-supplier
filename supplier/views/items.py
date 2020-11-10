@@ -62,12 +62,23 @@ class ItemUpdateView(ExtraContext, UpdateView):
 class ItemListView(ExtraContext, ListView):
     model = Item
     extra_context = {'active': ['_union_prod', '__item']}
+    
+    def get_queryset(self):
+        qs = super(ItemListView, self).get_queryset()
+        if self.request.user.profile.access_level.name == "SUPPLIER":
+            qs = qs.filter(supplier=self.request.user.supplier_user.supplier)
+        return qs
+    
+    def get_context_data(self, **kwargs):
+        context = super(ItemListView, self).get_context_data(**kwargs)
+        return context
 
 
 def get_item_price(request, pk):
     try:
         pp = Item.objects.get(pk=pk)
-        return JsonResponse({"price": pp.price})
-    except Exception:
+        return JsonResponse({"id": pp.id, "name": pp.name, "price": pp.price}, safe=False)
+    except Exception as e:
+        log_error()
         return JsonResponse({"price": "error"})
 

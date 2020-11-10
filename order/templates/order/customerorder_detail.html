@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h2 class="heading_a uk-margin-bottom">Order List</h2>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'order:create' %}" class="md-btn md-btn-success uk-float-right">Add Order</a>
+        </div>
+    </div>
+    
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div id="invoice_preview">
+                <div class="md-card-toolbar">
+                    <div class="md-card-toolbar-actions hidden-print">
+                        <i class="md-icon material-icons" id="invoice_print"></i>
+                        <div class="md-card-dropdown" data-uk-dropdown="{pos:'bottom-right'}">
+                            <i class="md-icon material-icons"></i>
+                            <div class="uk-dropdown uk-dropdown-small">
+                                <ul class="uk-nav">
+                                    <li><a href="#">Archive</a></li>
+                                    <li><a href="#" class="uk-text-danger">Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="md-card-toolbar-heading-text large" id="invoice_name">
+                        Invoice  {{ object.order_number }}
+                    </h3>
+                </div>
+                <div class="md-card-content" style="height: 473px;">
+                    <div class="uk-margin-medium-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">Date:</span> {{ object.order_date }}
+                        <br>
+                        <!--<span class="uk-text-muted uk-text-small uk-text-italic">Due Date:</span> 13.11.2020-->
+                    </div>
+                    <div class="uk-grid" data-uk-grid-margin="">
+                        <div class="uk-width-small-3-5">
+                            <div class="uk-margin-bottom">
+                                <span class="uk-text-muted uk-text-small uk-text-italic">From:</span>
+                                <address>
+                                    <p><strong>{{ object.agro_dealer }}</strong></p>
+                                    <p>{{ object.address }}</p>
+                                </address>
+                            </div>
+                            <div class="uk-margin-medium-bottom">
+                                <span class="uk-text-muted uk-text-small uk-text-italic">To:</span>
+                                <address>
+                                    <p><strong>{{ object.agro_dealer }}</strong></p>
+                                    <p>{{ object.address }}</p>
+                                </address>
+                            </div>
+                            <div class="uk-margin-medium-bottom">
+                                <b>STATUS:</b> {{ object.status }}
+                                {% if object.status == 'PENDING' %}
+                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CANCELLED');" >CANCELLED</a>
+                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CONFIRMED');">CONFIRMED</a>
+                                {% elif  object.status == 'CONFIRMED' %}
+                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('SHIPPED');">SHIPPED</a>
+                                {% elif  object.status == 'SHIPPED' %}
+                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('REJECTED');">REJECTED</a>
+                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('DELIVERED');">DELIVERED</a>
+                                {% endif %}
+                            
+                            </div>
+                        </div>
+                        <div class="uk-width-small-2-5">
+                            <span class="uk-text-muted uk-text-small uk-text-italic">Total:</span>
+                            <p class="heading_b uk-text-success">{{ object.order_price|intcomma }}</p>
+                        </div>
+                    </div>
+                    <div class="uk-grid uk-margin-large-bottom">
+                        <div class="uk-width-1-1">
+                            <table class="uk-table">
+                                <thead>
+                                <tr class="uk-text-upper">
+                                    <th>Item</th>
+                                    <th class="uk-text-center">Unit Price</th>
+                                    <th class="uk-text-center">Quantity</th>
+                                    <th class="uk-text-center">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in object.get_orders %}
+                                    <tr class="uk-table-middle">
+                                        <td>
+                                            <span class="uk-text-large">{{ item.item }}</span><br>
+                                        </td>
+                                        <td class="uk-text-center">
+                                            {{ item.unit_price|intcomma }}
+                                        </td>
+                                        <td class="uk-text-center">
+                                            {{ item.quantity|intcomma }}
+                                        </td>
+                                        
+                                        <td class="uk-text-center">
+                                            {{ item.price|intcomma }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+   {% endblock %}
+   
+   {% block page_specific_scripts %}
+   <script>
+    function changeStatus(status){
+        $.ajax('/order/update/order/status/', 
+        {
+            method: 'post', // type of response data
+            dataType: 'json', // type of response data
+            timeout: 500,     // timeout milliseconds
+            data:{id: '{{ object.id }}', status: status, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function (data,status,xhr) {   // success callback function
+               location.reload();
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback 
+                console.log(textStatus)
+            }
+        });
+    }
+   </script>
+   
+   {% endblock %}

@@ -174,7 +174,7 @@ LOGGING = {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
             #'filename': "/var/log/hamwepay.log",
-            'filename': "/tmp/umis.log",
+            'filename': "/tmp/mykoop-supplier.log",
             'maxBytes': 50000,
             'backupCount': 20,
             'formatter': 'standard',
@@ -196,7 +196,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'umis': {
+        'mykoop-supplier': {
             'handlers': ['console', 'logfile'],
             'level': 'DEBUG',
         },
