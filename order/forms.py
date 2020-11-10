@@ -13,7 +13,7 @@ class SupplyOrderForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super(SupplyOrderForm, self).__init__(*args, **kwargs)
         self.fields['order_price'].widget = forms.HiddenInput()
-        print(self.request.user.agro_dealer_user.agrodealer.id)
+       
         if not self.request.user.is_superuser:
             if self.request.user.profile.access_level.name == 'SUPPLIER':
                 self.fields['supplier'].widget = forms.HiddenInput()
