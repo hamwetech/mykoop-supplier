@@ -19,7 +19,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Supplier</th>
-                        <th>Price</th>
+                        <th>Create Date</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -28,7 +28,7 @@
                             <tr>
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.supplier }}</td>
-                                <td>{{ item.price }}</td>
+                                <td>{{ item.create_date }}</td>
                                 
                                 <td>
                                     <a href="{% url 'agrodealer:update' item.id %}" class="md-btn md-btn-wave waves-effect waves-button uk-float-right">Edit</a>

@@ -10,9 +10,9 @@ from django.http import JsonResponse
 from django.db.models import Q, Count, Sum
 from django.utils.encoding import smart_str
 from django.views.generic import ListView, View, TemplateView, DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-from conf.utils import log_debug, log_error, genetate_uuid4
+from conf.utils import log_debug, log_error, genetate_uuid4, get_deleted_objects
 from supplier.models import Supplier, Item
 from agrodealer.models import AgroDealer, AgroDealerItem
 from order.models import SupplyOrder, OrderItem, CustomerOrder, CustomerOrderItem, Customer
@@ -32,12 +32,14 @@ class ExtraContext(object):
 
 class CustomerListView(ExtraContext, ListView):
     model = Customer
+    extra_context = {'active': ['_order', '_agrodealer_order']}
     
 
 class CustomerCreateView(ExtraContext, CreateView):
     model = Customer
     form_class = CustomerForm
     success_url = reverse_lazy('order:order_create')
+    extra_context = {'active': ['_order', '_agrodealer_order']}
     
     def form_valid(self, form):
         form.instance.customer_reference = genetate_uuid4()
@@ -48,11 +50,12 @@ class CustomerCreateView(ExtraContext, CreateView):
 
 class SupplyOrderListView(ExtraContext, ListView):
     model = SupplyOrder
-    
+    ordering = ['-create_date']
     def get_queryset(self):
         qs = super(SupplyOrderListView, self).get_queryset()
-        if self.request.user.profile.access_level.name == "SUPPLIER":
-            qs = qs.filter(supplier=self.request.user.supplier_user.supplier)
+        if not self.request.user.is_superuser:
+            if self.request.user.profile.access_level.name == "SUPPLIER":
+                qs = qs.filter(supplier=self.request.user.supplier_user.supplier)
         return qs
     
     def get_context_data(self, **kwargs):
@@ -93,8 +96,9 @@ class SupplyOrderCreateView(ExtraContext, View):
                     order.created_by = request.user
                     order.order_reference = genetate_uuid4()
                     order.order_number = order_number
-                    if request.user.profile.access_level.name == "SUPPLIER":
-                        order.supplier = request.user.supplier_user.supplier
+                    if not request.user.is_superuser:
+                        if request.user.profile.access_level.name == "SUPPLIER":
+                            order.supplier = request.user.supplier_user.supplier
                     order.save()
                     
                     data = request.POST
@@ -132,6 +136,26 @@ class SupplyOrderDetailView(ExtraContext, DetailView):
     model = SupplyOrder
     
 
+class SupplyOrderDeleteView(ExtraContext, DeleteView):
+    model = SupplyOrder
+    success_url = reverse_lazy('order:list')
+    template_name = 'delete.html'
+
+    def get_context_data(self, **kwargs):
+        #
+        context = super(SupplyOrderDeleteView, self).get_context_data(**kwargs)
+        #
+
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        #
+        context['deletable_objects']=deletable_objects
+        context['model_count']=dict(model_count).items()
+        context['protected']=protected
+        #
+        return context
+
+    
+
 def update_status(request):
     pk = request.POST.get('id')
     status = request.POST.get('status')
@@ -146,6 +170,7 @@ def update_status(request):
 
 class CustomerOrderListView(ExtraContext, ListView):
     model = CustomerOrder
+    extra_context = {'active': ['_order', '_agrodealer_order']}
     
 
 class CustomerOrderCreateView(ExtraContext, View):
@@ -157,7 +182,7 @@ class CustomerOrderCreateView(ExtraContext, View):
         data = {
             'form': form,
             'item_form': CustomerOrderItemForm,
-            'active': ['_order', '__customer_order']
+            'active': ['_order', '_agrodealer_order']
         }
         return render(request, self.template_name, data)
     
@@ -208,7 +233,7 @@ class CustomerOrderCreateView(ExtraContext, View):
         data = {
             'form': form,
             'item_form': OrderItemForm,
-            'active': ['_order', '__customer_order']
+            'active': ['_order', '_agrodealer_order']
         }
         data.update(error)
         return render(request, self.template_name, data)
@@ -227,6 +252,12 @@ def update_customer_order_status(request):
         'status': 'success'
     }
     return JsonResponse(data)
+
+def load_supplier_items(request):
+    supplier = request.GET.get('supplier')
+    items = Item.objects.values('id', 'name').filter(supplier__id=supplier).order_by('name')
+    return JsonResponse(list(items), safe=False)
+
 
 
 

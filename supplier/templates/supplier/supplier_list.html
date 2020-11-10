@@ -18,7 +18,6 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                       <th>Unions</th>
                        <th></th>
                     </tr>
                     </thead>
@@ -26,7 +25,6 @@
                         {% for item in object_list %}
                             <tr>
                                 <td>{{ item.name }}</td>
-                                <td>{{ item.union.all }}</td>
                                 <td>
                                      <a href="{% url 'supplier:supplier_edit' item.id %}"  class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a>
                                      <a href="{% url 'supplier:supplier_user' item.id %}" class="uk-float-right"><i class="md-icon material-icons">

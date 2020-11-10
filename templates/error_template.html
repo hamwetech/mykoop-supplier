@@ -1,0 +1,24 @@
+{% if form.errors %}
+    <div class="uk-alert uk-alert-danger" data-uk-alert="">
+      <h4>Please fix the following errors</h4>
+      <a href="#" class="uk-alert-close uk-close"></a>
+      <ul>
+        
+        {% for field in form %}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <li>{{ error|escape }}</li>
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+      {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+      {% endif %}
+      {% if form.non_form_errors %}
+        {{ form.non_form_errors }}
+      {% endif %}
+      
+    </div>
+  {% endif %}
+  

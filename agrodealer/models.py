@@ -4,8 +4,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from conf.models import County, District, SubCounty
+from supplier.models import Supplier
 
 class AgroDealer(models.Model):
+    supplier = models.ForeignKey(Supplier, null=True, blank=True)
     name = models.CharField(max_length=255, unique=True)
     reference = models.CharField(max_length=255)
     logo = models.ImageField(upload_to='supplier/logo/', null=True, blank=True)

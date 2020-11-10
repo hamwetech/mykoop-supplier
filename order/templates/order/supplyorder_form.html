@@ -15,7 +15,7 @@
                         {% endfor %}
                      </div>
                 </div>
-
+                  
                 <div class="uk-grid" data-uk-grid-margin>
                     {% for item in item_form %}
                         <div class="uk-width-medium-1-2">
@@ -24,6 +24,7 @@
                     {% endfor %}
                     
                 </div>
+                
                 <div class="uk-grid">
                         <div class="uk-width-1-1">
                             <a href="javascript:void(0);" type="submit" class="md-btn md-btn-success uk-float-right" id="id_add_item">Add Item</a>
@@ -121,5 +122,25 @@
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return parts.join(".");
     }
+    
+     $("#id_supplier").change(function () {
+            var url = "{% url 'order:supplier_item' %}";  // get the url of the `load_cities` view
+            var supplier = $(this).val();  // get the selected country ID from the HTML input
+            $('#id_item').empty()
+            $.ajax({                       // initialize an AJAX request
+                url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'supplier': supplier       // add the country id to the GET parameters
+                },
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                   $('#id_item').append('<option value="">----------------------</option>');
+                   $.each(data, function (key, entry){
+                     console.log(data)
+                     $('#id_item').append('<option value=' + entry.id + '>' + entry.name + '</option>');
+                   })
+                }
+            });
+      
+        });
 </script>
 {% endblock %}

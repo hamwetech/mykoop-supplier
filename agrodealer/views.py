@@ -59,6 +59,7 @@ class AgroDealerUpdateView(ExtraContext, UpdateView):
 
 class AgroDealerUserListView(ExtraContext, ListView):
     model = AgroDealerUser
+    extra_context = {'active': ['_agrodealer', '_agrodealer']}
     
     def get_context_data(self, **kwargs):
         context = super(AgroDealerUserListView, self).get_context_data(**kwargs)
@@ -87,7 +88,7 @@ class AgroDealerUserCreate(View):
         user_form = UserForm(instance=instance)
         profile_form = UserProfileForm(instance=profile)
 
-        data = {'user_form': user_form, 'profile_form': profile_form, 'supplier_id': pk}
+        data = {'user_form': user_form, 'profile_form': profile_form, 'supplier_id': pk, 'active': ['_agrodealer']}
         return render(request, self.template_name, data)
 
     def post(self, request, *arg, **kwargs):
@@ -125,7 +126,7 @@ class AgroDealerUserCreate(View):
             except Exception as e:
                 log_error()
                 errors['errors'] = "Error %s" % e
-        data = {'user_form': user_form, 'profile_form': profile_form}
+        data = {'user_form': user_form, 'profile_form': profile_form, 'active': ['_agrodealer']}
         data.update(errors)
         return render(request, self.template_name, data)
     
@@ -134,39 +135,39 @@ class AgroDealerUserCreate(View):
 class AgroDealerCategoryCreateView(ExtraContext, CreateView):
     model = AgroDealerCategory
     form_class = AgroDealerCategoryForm
-    extra_context = {'active': ['_union_prod', '__agrodealercategory']}
+    extra_context = {'active': ['_union_prod', '_agrodealer_items']}
     success_url = reverse_lazy('agrodealer:category_list')
 
 
 class AgroDealerCategoryUpdateView(ExtraContext, UpdateView):
     model = AgroDealerCategory
     form_class = AgroDealerCategoryForm
-    extra_context = {'active': ['_union_prod', '__agrodealercategory']}
+    extra_context = {'active': ['_agrdealer', '_agrodealer_items']}
     success_url = reverse_lazy('agrodealer:category_list')
 
 
 class AgroDealerCategoryListView(ExtraContext, ListView):
     model = AgroDealerCategory
-    extra_context = {'active': ['_union_prod', '__agrodealercategory']}    
+    extra_context = {'active': ['_union_prod', '_agrodealer_items']}    
 
 
 class AgroDealerItemCreateView(ExtraContext, CreateView):
     model = AgroDealerItem
     form_class = AgroDealerItemForm
-    extra_context = {'active': ['_union_prod', '__agrodealeritem']}
+    extra_context = {'active': ['_union_prod', '_agrodealer_items']}
     success_url = reverse_lazy('agrodealer:item_list')
 
 
 class AgroDealerItemUpdateView(ExtraContext, UpdateView):
     model = AgroDealerItem
     form_class = AgroDealerItemForm
-    extra_context = {'active': ['_union_prod', '__agrodealeritem']}
+    extra_context = {'active': ['_union_prod', '_agrodealer_items']}
     success_url = reverse_lazy('agrodealer:item_list')
 
 
 class AgroDealerItemListView(ExtraContext, ListView):
     model = AgroDealerItem
-    extra_context = {'active': ['_union_prod', '__agrodealeritem']}
+    extra_context = {'active': ['_union_prod', '_agrodealer_items']}
 
 
 def get_agrodealeritem_price(request, pk):

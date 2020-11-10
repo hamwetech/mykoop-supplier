@@ -21,6 +21,7 @@
                         <th>Supplier</th>
                         <th>Price</th>
                         <th>Status</th>
+                        <th>Create Date</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -31,8 +32,9 @@
                                 <td>{{ item.supplier }}</td>
                                 <td>{{ item.order_price }}</td>
                                 <td>{{ item.status }}</td>
+                                <td>{{ item.create_date }}</td>
                                 <td>
-                                    <a href="{% url 'supplier:item_update' item.id %}" class="md-btn md-btn-wave waves-effect waves-button uk-float-right">Edit</a>
+                                    <a href="{% url 'order:delete' item.id %}" class="md-btn md-btn-danger md-btn-wave waves-effect waves-button uk-float-right">Delete</a>
                                     <a href="{% url 'order:detail' item.id %}" class="md-btn md-btn-wave waves-effect waves-button uk-float-right">OPEN</a>
                                 </td>
                             </tr>

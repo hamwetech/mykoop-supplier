@@ -33,7 +33,7 @@ class SupplyOrder(models.Model):
         ('DELIVERED', 'DELIVERED'),
         ('REJECTED', 'REJECTED'),
     )
-    agro_dealer = models.ForeignKey(AgroDealer)
+    agro_dealer = models.ForeignKey(AgroDealer, blank=True)
     supplier = models.ForeignKey(Supplier, blank=True)
     order_number = models.CharField(max_length=255, blank=True)
     order_reference = models.CharField(max_length=255, blank=True)

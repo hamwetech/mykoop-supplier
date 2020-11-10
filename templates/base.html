@@ -140,13 +140,21 @@
                             <span class="menu_title">Order</span>
                         </a>
                     </li>
-                {% endif %}
-                
-                {% if  request.user.profile.access_level.name == 'AGRODEALER' or  request.user.is_superuser  %}
                     <li {% if '_agrodealer' in active %}class="current_section"{% endif %} title="Supplier">
                         <a href="{% url 'agrodealer:list' %}">
                             <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
                             <span class="menu_title">AgroDealers</span>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                
+                    
+                {% if  request.user.profile.access_level.name == 'AGRODEALER' or  request.user.is_superuser  %}
+                     <li {% if '__order' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'order:list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">Order</span>
                         </a>
                     </li>
                      <li {% if '_agrodealer_items' in active %}class="current_section"{% endif %} title="Supplier">
@@ -158,10 +166,11 @@
                     <li {% if '_agrodealer_order' in active %}class="current_section"{% endif %} title="Supplier">
                         <a href="{% url 'order:order_list' %}">
                             <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
-                            <span class="menu_title">AgroDealers Order</span>
+                            <span class="menu_title">Customer Order</span>
                         </a>
                     </li>
                 {% endif %}
+                
                 {% if request.user.is_superuser %}
                  <li>
                     <a href="#">
@@ -175,6 +184,23 @@
                         <li {% if '__access_group' in active %}class="act_item"{% endif %}><a href="{% url 'profile:ag_list' %}">Access Group</a></li>
                     </ul>
                 </li>
+                 <li {% if '_config' in active %}class="current_section"{% endif %}>
+                    <a href="#">
+                        <span class="menu_icon"><i class="material-icons">settings</i></span>
+                        <span class="menu_title">System Configuration</span>
+                    </a>
+                    <ul>
+                        <li  {% if '__messageT' in active %}class="act_item"{% endif %}><a href="{% url 'conf:sms_template' %}">SMS Templates</a></li>
+                        <li  {% if '__district' in active %}class="act_item"{% endif %}><a href="{% url 'conf:district_list' %}">District</a></li>
+                        <li  {% if '__county' in active %}class="act_item"{% endif %}><a href="{% url 'conf:county_list' %}">County</a></li>
+                        <li  {% if '__sub_county' in active %}class="act_item"{% endif %}><a href="{% url 'conf:subcounty_list' %}">Sub County</a></li>
+                        <li  {% if '__village' in active %}class="act_item"{% endif %}><a href="{% url 'conf:village_list' %}">Village</a></li>
+                        <li  {% if '__payment_method' in active %}class="act_item"{% endif %}><a href="{% url 'conf:payment_list' %}">Payment Mode</a></li>
+                        <li  {% if '__email_smtp' in active %}class="act_item"{% endif %}><a href="layout_top_menu.html">SMTP Email</a></li>
+                        <li  {% if '__sms_api' in active %}class="act_item"{% endif %}><a href="layout_header_full.html">SMS API</a></li>
+                    </ul>
+                </li>
+
                 {% endif %}
 
             </ul>

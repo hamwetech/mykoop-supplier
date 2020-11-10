@@ -65,8 +65,9 @@ class ItemListView(ExtraContext, ListView):
     
     def get_queryset(self):
         qs = super(ItemListView, self).get_queryset()
-        if self.request.user.profile.access_level.name == "SUPPLIER":
-            qs = qs.filter(supplier=self.request.user.supplier_user.supplier)
+        if not self.request.user.is_superuser:
+            if self.request.user.profile.access_level.name == "SUPPLIER":
+                qs = qs.filter(supplier=self.request.user.supplier_user.supplier)
         return qs
     
     def get_context_data(self, **kwargs):
