@@ -151,12 +151,14 @@
                 
                     
                 {% if  request.user.profile.access_level.name == 'AGRODEALER' or  request.user.is_superuser  %}
+                    {% if not request.user.is_superuser %}
                      <li {% if '__order' in active %}class="current_section"{% endif %} title="Supplier">
                         <a href="{% url 'order:list' %}">
                             <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
                             <span class="menu_title">Order</span>
                         </a>
                     </li>
+                     {% endif %}
                      <li {% if '_agrodealer_items' in active %}class="current_section"{% endif %} title="Supplier">
                         <a href="{% url 'agrodealer:item_list' %}">
                             <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
