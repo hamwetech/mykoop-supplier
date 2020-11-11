@@ -70,6 +70,7 @@ class Village(models.Model):
     
 class PaymentMethod(models.Model):
     method = models.CharField('Method', max_length=50)
+    code = models.CharField('Code', max_length=10, blank=True, null=True)
     create_date = models.DateTimeField(auto_now=True)
     update_date = models.DateTimeField(auto_now=True)
     

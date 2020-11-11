@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %}
+{% load el_pagination_tags %}
+{% block style %}
+<style type="text/css">
+    .row-pagination{
+        margin: 15px;
+    }
+    .row-pagination a{
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    .endless_page_current{
+        background: #7cb342;
+        color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+</style>
+{% endblock %}
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h4 class="heading_a uk-margin-bottom">Payments</h4>
+        </div>
+        <div class="uk-width-medium-1-2 uk-text-right">
+            <a href="#" id="download_excel" class="md-btn md-btn-primary ">Download Excel</a>
+            <a href="{% url 'payment:bulk_list' %}" class="md-btn md-btn-success ">Bulk Payment</a>
+            {% if request.user.profile.is_union %}
+                 <a href="{% url 'payment:create' %}" class="md-btn md-btn-success ">Add Payment</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <form class="" method="get">
+            <div class="uk-grid" data-uk-grid-margin>
+                {% for field in form %}
+                    <div class="uk-width-medium-1-5">
+                        {% include 'form/field.html' with field=field %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-medium-5 uk-right">
+                </div>
+                <div class="uk-width-medium-5 uk-float-right">
+                    <button class="md-btn" name="_search" > Search </button>
+                    <a href="." class="md-btn md-btn-small md-btn-flat md-btn-flat-primary  uk-margin-small-left"><i class="material-icons md-24 " title="Delete">refresh</i></a>
+                    <!--<button class="md-btn md-btn-success uk-float-right" name="_download" value="download"> Export CSV </button>-->
+                </div>
+             </div>
+            </form>
+            </div>
+        <hr class="uk-grid-divider">
+        <div class="md-card-content">
+            
+            <div class="uk-overflow-container">
+                <table id="dt_tableTools" class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Payment Date</th>
+                        <th>Coop</th>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Reference</th>
+                        <th>Status</th>
+                        <th>Payment Method</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% paginate object_list %}{% get_pages %}
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.payment_date| date:"d, M Y" }}</td>
+                               <td>{{ item.cooperative }}</td>
+                                <td>{{ item.member }}</td>
+                                <td>{{ item.amount }}</td>
+                                <td>{{ item.transaction_reference }}</td>
+                                <td>{% include 'status_text.html' with field=item.status %}</td>
+                                <td>{{ item.payment_method }}</td>
+                                <td><a href="{% url 'payment:detail' item.id %}" class="md-btn md-btn-success uk-margin-small-top uk-float-right" >Detail</a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row-pagination">
+                Showing entries
+                {{ pages.current_start_index }}-{{ pages.current_end_index }} of
+                {{ pages.total_count }}.
+                {# Just print pages to render the Digg-style pagination. #}
+                {% show_pages %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+<script>
+    $("#download_excel").on('click', function(e){
+            var qstring = window.location.search.replace("?", "");
+            var url = "{% url 'payment:download' %}"+"?download=csv&";
+            //var urlParams = new URLSearchParams(window.location.search);
+            var furl = url+qstring;
+           
+            window.location = furl
+            //$.get(furl, function(data, status){
+            //    alert("Data: " + data + "\nStatus: " + status);
+            //});
+            
+        });
+    $("#id_start_date").attr("autocomplete", "off");
+    $("#id_end_date").attr("autocomplete", "off");
+</script>
+ <!-- datatables -->
+    <script src="{% static 'bower_components/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <!-- datatables colVis-->
+    <script src="{% static 'bower_components/datatables-colvis/js/dataTables.colVis.js' %}"></script>
+<!-- datatables tableTools-->
+    <script src="{% static 'bower_components/datatables-tabletools/js/dataTables.tableTools.js' %}"></script>
+    <!-- datatables custom integration -->
+    <script src="{% static 'assets/js/custom/datatables_uikit.min.js' %}"></script>
+
+    <!--  datatables functions -->
+    <script src="{% static 'assets/js/pages/plugins_datatables.min.js' %}"></script>
+{% endblock %}

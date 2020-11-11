@@ -29,7 +29,7 @@ class VillageForm(forms.ModelForm):
 class PaymentMethodForm(forms.ModelForm):
     class Meta:
         model = PaymentMethod
-        fields = ['method']
+        fields = ['method', 'code']
         
         
 class UploadLocation(forms.Form):

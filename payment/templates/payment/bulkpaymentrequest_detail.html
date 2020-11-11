@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_custom_tags %}
+
+{% block page_content %}
+
+        <div class="md-card-content">
+<div class="uk-width-large-7-10 uk-row-first">
+<div class="md-card md-card-single main-print" id="invoice" style="opacity: 1; transform: scale(1);">
+    <div id="invoice_preview">
+        <div class="md-card-toolbar">
+            <div class="md-card-toolbar-actions hidden-print" style="padding-top: 0px !important;">
+                
+                <a href="{% url 'payment:bulk_list' %}" class="md-btn md-btn-primary uk-margin-small-top">Back</a>
+                {% if object.status != 'COMPLETED'%}
+                    <button href="#" id="id_cancel" class="md-btn md-btn-danger uk-margin-small-top" onclick="UIkit.modal.confirm('Are you sure you want to continue with this transaction?', function(){ cancel_confirm(); });">CANCEL</button>
+                    <button href="#" id="id_submit" class="md-btn md-btn-success uk-margin-small-top" onclick="UIkit.modal.confirm('Are you sure you want to continue with this transaction?', function(){ confirm(); });">CONFIRM</button>
+                {% endif %}
+                
+            </div>
+            <h3 class="md-card-toolbar-heading-text large" id="invoice_name">
+                Bulk Payment Request
+            </h3>
+        </div>
+        <div class="md-card-content" style="">
+            
+            <div class="uk-margin-medium-bottom">
+                <span class="uk-text-muted uk-text-small uk-text-italic">Date:</span> {{object.create_Date}}
+                <br>
+                <!--<span class="uk-text-muted uk-text-small uk-text-italic">Due Date:</span> 02.01.2019-->
+            </div>
+            <div class="uk-grid" data-uk-grid-margin="">
+                <div class="uk-width-small-3-5 uk-row-first">
+                    <div class="uk-margin-medium-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">Cooperative</span>
+                        <p> <strong>{{ object.cooperative}}</strong></p>
+                        <!--<p class="uk-text-small uk-text-muted uk-margin-top-remove">Incl. VAT - $862.85</p>-->
+                    </div>
+                    <div class="uk-margin-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">Payment Method:</span>
+                        <address>
+                            <p id="id_payment_method"><strong>{{ object.payment_method }}</strong></p>
+                       </address>
+                    </div>
+                    <div class="uk-margin-medium-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">Status:</span>
+                        <address>
+                            <p><strong>{{ object.status }} </strong></p>
+                            
+                        </address>
+                    </div>
+                    <div class="uk-margin-medium-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">File:</span>
+                        <address>
+                            <p><strong>{{ object.file_name }} </strong></p>
+                            
+                        </address>
+                    </div>
+                </div>
+                <div class="uk-width-small-2-5">
+                    <div class="uk-margin-medium-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">Total Amount:</span>
+                        <p class="heading_b uk-text-success">{{ object.total_amount}}</p>
+                        <!--<p class="uk-text-small uk-text-muted uk-margin-top-remove">Incl. VAT - $862.85</p>-->
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="uk-grid uk-margin-large-bottom">
+                <div class="uk-width-1-1">
+                    <div class="uk-overflow-container">
+                        <table  id="dt_tableTools" class="uk-table uk-table-striped">
+                            <thead>
+                            <tr class="uk-text-upper">
+                                <th>Member</th>
+                                <th>Phone Number</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Sent Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in object.get_log %}
+                                    <tr class="uk-table-middle">
+                                        <td class="uk-text-center">{{ item.member }}</td>
+                                        <td class="uk-text-center">{{ item.member.phone_number }}</td>
+                                        <td class="uk-text-center">{{ item.amount }}</td>
+                                        <td class="uk-text-center">{{ item.process_state }}</td>
+                                        <td class="uk-text-center">{{ item.update_date| date:"d, M Y" }}</td>
+                                    </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div id="invoice_form"></div>
+</div>
+</div>
+
+</div>
+
+{% endblock %}
+{% block page_specific_scripts %}
+<script>
+    function confirm(){
+         var modal = UIkit.modal.blockUI('<div class=\'uk-text-center\'>Please wait...<br/><img class=\'uk-margin-top\' src=\'{% static "assets/img/spinners/spinner.gif" %}\' alt=\'\'>');
+         
+         $.ajax({                       // initialize an AJAX request
+            url: "{% url 'payment:bulk_confirm' object.id %}",
+            method: "POST",
+            dataType: "json",
+            data: {
+                'payment_method': "{{ object.payment_method }}" ,
+                'csrftoken': getCookie('csrftoken')// add the country id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                console.log(data);        // replace the contents of the city input with the data that came from the server
+                //var res = JSON.parse(data);
+                modal.hide();
+                UIkit.modal.confirm(data.message, function(){ window.location.href = "{% url 'payment:list' %}"; });
+            }
+        });
+    }
+    
+    function cancel_confirm(){
+         var modal = UIkit.modal.blockUI('<div class=\'uk-text-center\'>Please wait...<br/><img class=\'uk-margin-top\' src=\'{% static "assets/img/spinners/spinner.gif" %}\' alt=\'\'>');
+         
+         $.ajax({                       // initialize an AJAX request
+            url: "{% url 'payment:bulk_delete' object.id %}",
+            method: "POST",
+            dataType: "json",
+            data: {
+                'csrftoken': getCookie('csrftoken')// add the country id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                console.log(data);        // replace the contents of the city input with the data that came from the server
+                //var res = JSON.parse(data);
+                modal.hide();
+                UIkit.modal.confirm(data.message, function(){ window.location.href = "{% url 'payment:bulk_list' %}"; });
+            }
+        });
+    }
+    
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
+    </script>
+ <!-- datatables -->
+    <script src="{% static 'bower_components/datatables/media/js/jquery.dataTables.min.js' %}"></script>
+    <!-- datatables colVis-->
+    <script src="{% static 'bower_components/datatables-colvis/js/dataTables.colVis.js' %}"></script>
+    <!-- datatables custom integration -->
+    <script src="{% static 'assets/js/custom/datatables_uikit.min.js' %}"></script>
+
+    <!--  datatables functions -->
+    <script src="{% static 'assets/js/pages/plugins_datatables.min.js' %}"></script>
+    
+    
+{% endblock %}

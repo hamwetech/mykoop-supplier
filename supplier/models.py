@@ -7,7 +7,7 @@ from conf.models import County, District, SubCounty
 
 class Supplier(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    logo = models.ImageField(upload_to='supplier/logo/')
+    logo = models.ImageField(upload_to='supplier/logo/', null=True, blank=True,)
     district = models.ForeignKey(District, null=True, blank=True, on_delete=models.SET_NULL)
     county = models.ForeignKey(County, null=True, blank=True, on_delete=models.SET_NULL)
     sub_county = models.ForeignKey(SubCounty, null=True, blank=True, on_delete=models.SET_NULL)

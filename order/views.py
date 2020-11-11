@@ -15,6 +15,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from conf.utils import log_debug, log_error, genetate_uuid4, get_deleted_objects
 from supplier.models import Supplier, Item
 from agrodealer.models import AgroDealer, AgroDealerItem
+from payment.PaymentTransaction import PaymentTransaction
 from order.models import SupplyOrder, OrderItem, CustomerOrder, CustomerOrderItem, Customer
 from order.forms import OrderItemForm, SupplyOrderForm, CustomerOrderItemForm, CustomerOrderForm, CustomerForm
 
@@ -56,6 +57,8 @@ class SupplyOrderListView(ExtraContext, ListView):
         if not self.request.user.is_superuser:
             if self.request.user.profile.access_level.name == "SUPPLIER":
                 qs = qs.filter(supplier=self.request.user.supplier_user.supplier)
+            if self.request.user.profile.access_level.name == "AGRODEALER":
+                qs = qs.filter(agro_dealer=self.request.user.agro_dealer_user.agrodealer)
         return qs
     
     def get_context_data(self, **kwargs):
@@ -159,12 +162,20 @@ class SupplyOrderDeleteView(ExtraContext, DeleteView):
 def update_status(request):
     pk = request.POST.get('id')
     status = request.POST.get('status')
-    print(pk)
-    print(status)
-    SupplyOrder.objects.filter(pk=pk).update(status=status)
-    data = {
-        'status': 'success'
-    }
+    try:
+        ss = SupplyOrder.objects.get(pk=pk)
+        if status == "MAKEPAYMENT":
+            msisdn = ss.agro_dealer.phone_number
+            amount = ss.order_price
+            pmt = PaymentTransaction(msisdn, amount)
+            pmt.mobile_money_transation()
+            status = "PENDING PAYMENT"
+        ss.status=status
+        ss.save()
+        data = {'status': 'success'}
+    except Exception as e:
+        data = {"status": "error"}
+        print(e)
     return JsonResponse(data)
 
 

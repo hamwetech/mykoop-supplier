@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_custom_tags %}
+
+{% block style %}
+    <!-- additional styles for plugins -->
+     <!-- kendo UI -->
+    <link rel="stylesheet" href="{% static 'bower_components/kendo-ui/styles/kendo.common-material.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bower_components/kendo-ui/styles/kendo.material.min.css' %}"/>
+    <style>
+        .k-combobox{
+            width: 100% !important;
+        }
+    </style>
+    
+{% endblock %}
+{% block page_content %}
+    <h3 class="heading_b uk-margin-bottom">Payment Form</h3>
+    <div class="md-card">
+        <div class="md-card-content">
+    
+            <form method="POST" class="new-event-form" role="role">
+               {% csrf_token %}
+               
+                   <div class="uk-grid" data-uk-grid-margin="">
+                       
+                       <div class="uk-width-medium-1-2">
+                           <div class="md-input-wrapper">
+                               {% include "form/field.html" with field=form.cooperative input_group_add_on='<i class="uk-input-group-icon uk-icon-building "></i>' %}
+                           </div>
+                       </div>
+                       
+                       <div class="uk-width-medium-1-2">
+                           <div class="md-input-wrapper">
+                               {% include "form/field.html" with field=form.member input_group_add_on='<i class="uk-input-group-icon uk-icon-user "></i>' %}
+                           </div>
+                       </div>
+                   </div>
+                   <div class="uk-grid" data-uk-grid-margin="">
+                     <div class="uk-width-medium-1-2">
+                           <div class="md-input-wrapper">
+                               {% include "form/field.html" with field=form.payment_method  input_group_add_on='<i class="uk-input-group-icon uk-icon-calendar"></i>' %}
+                           </div>
+                       </div>
+                   </div>
+                   <div class="uk-grid" data-uk-grid-margin="">
+                       <div class="uk-width-medium-1-2">
+                           <div class="md-input-wrapper">
+                               <!--{% include "form/field.html" with field=form.payment_date|htmlattributes:"data-uk-datepicker={format:'YYYY-MM-DD'}| class=md-input"  input_group_add_on='<i class="uk-input-group-icon uk-icon-calendar"></i>' %}-->
+                               {% include "form/field.html" with field=form.payment_date input_group_add_on='<i class="uk-input-group-icon uk-icon-calendar"></i>' %}
+                           </div>
+                       </div>
+                        <div class="uk-width-medium-1-2">
+                           <div class="md-input-wrapper">
+                               {% include "form/field.html" with field=form.amount input_group_add_on='<i class="uk-input-group-icon uk-icon-money "></i>' %}
+                           </div>
+                       </div>
+                   </div>
+               
+                   
+                
+                       <div class="uk-grid uk-text-right" data-uk-grid-margin="">
+                           
+                           <div class="uk-width-medium-1-1 uk-text-right">
+                               <button href="#" id="id_submit" class="md-btn md-btn-primary uk-margin-small-top">SUBMIT</button>
+                           </div>
+                       </div>
+                   
+           </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+ <!-- page specific plugins -->
+    <!-- ionrangeslider -->
+    <script src="{% static 'bower_components/ion.rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+
+  <!-- inputmask-->
+    <script src="{% static 'bower_components/jquery.inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
+    <!--  forms advanced functions -->
+    <script src="{% static 'assets/js/pages/forms_advanced.min.js' %}"></script>
+    
+    <!--  dropify -->
+    <script src="{% static 'assets/js/custom/dropify/dist/js/dropify.min.js' %}"></script>
+
+    <!--  form file input functions -->
+    <script src="{% static 'assets/js/pages/forms_file_input.min.js' %}"></script>
+    
+    <!-- kendo UI -->
+    <script src="{% static 'assets/js/kendoui_custom.min.js' %}"></script>
+
+    <!--  kendoui functions -->
+    <script src="{% static 'assets/js/pages/kendoui.min.js' %}"></script>
+     <script src="{% static 'bower_components/jquery.formset.js' %}"></script>
+    <script>
+        var share_value = 0;
+         UIkit.datepicker("#id_payment_date", {maxDate:get_current_date(), format:'YYYY-MM-DD' });
+         $("#id_payment_date").attr("autocomplete", "off");
+        function get_current_date(){
+            var fullDate = new Date()
+            console.log(fullDate);
+            //Thu May 19 2011 17:25:38 GMT+1000 {}
+             
+            //convert month to 2 digits
+            var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : (fullDate.getMonth()+1);
+             
+            var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + (fullDate.getDate()+1);
+            console.log(currentDate);
+            return currentDate;
+         }
+         $("#id_order-0-price").addClass( " label-fixed " );
+        $('.id_item').kendoComboBox({
+            filter: "contains",
+            suggest: true
+        });
+        
+        $('#id_item').kendoComboBox({
+            filter: "contains",
+            suggest: true
+        });
+        
+        $("#id_item").on('change', function() {
+            $("#id_price").val('');
+            $("#id_quantity").val('');
+        });
+        
+        $("#id_quantity").on('input', function() {
+            var product = $("#id_item").val();
+            var quantity = $("#id_quantity").val();
+            var url = "http://"+window.location.host +"/product/item/price/"+product
+            $.get(url, function(data, status){
+                var total = quantity * data.price
+                $('#id_price').val(total)
+            });
+        });
+        
+        $('.link-formset').formset({
+            addText: 'add + ',
+            deleteText: 'remove -',
+            prefix : 'order'
+        });
+    
+        $('.link-formset-2').formset({
+            addText: 'add + ',
+            deleteText: 'remove -',
+            prefix: 'patterns'
+        });
+        
+        function refreshInput (args) {
+            var id = $(args).attr('id');
+            var price = id.replace("item", "price");
+            var quantity = id.replace("item", "quantity");
+            $("#"+quantity).val('')
+            $("#"+price).val('')
+        }
+        
+        function calculatePrice(args) {
+            var quantity = $(args).attr('id');
+            var price = quantity.replace("quantity", "price");
+            var item = quantity.replace("quantity", "item");
+            
+            var it = $("#"+item).val()
+            
+            var url = "http://"+window.location.host +"/product/item/price/"+it
+            $.get(url, function(data, status){
+                var total = $("#"+quantity).val() * data.price
+                $("#"+price).val(total)
+            });
+        }
+        
+        
+        //$("#id_village").empty();
+        $("#id_cooperative").change(function () {
+            var url = "{% url 'coop:ajax_load_members' %}"  // get the url of the `load_cities` view
+            var cooperative = $(this).val();  // get the selected country ID from the HTML input
+      
+            $.ajax({                       // initialize an AJAX request
+                url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'cooperative': cooperative       // add the country id to the GET parameters
+                },
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $("#id_member").html(data);  // replace the contents of the city input with the data that came from the server
+                }
+            });
+      
+        });
+            
+    </script>
+    
+{% endblock %}
+    

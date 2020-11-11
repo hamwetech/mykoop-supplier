@@ -27,6 +27,7 @@ class Customer(models.Model):
 class SupplyOrder(models.Model):
     status = (
         ('PENDING', 'PENDING'),
+        ('PAID', 'PAID'),
         ('CONFIRMED', 'CONFIRMED'),
         ('CANCELLED', 'CANCELLED'),
         ('SHIPPED', 'SHIPPED'),

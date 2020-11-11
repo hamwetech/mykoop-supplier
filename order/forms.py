@@ -13,6 +13,7 @@ class SupplyOrderForm(forms.ModelForm):
         self.request = kwargs.pop("request")
         super(SupplyOrderForm, self).__init__(*args, **kwargs)
         self.fields['order_price'].widget = forms.HiddenInput()
+        self.fields['order_date'].widget.attrs["data-uk-datepicker"] = "{format:'YYYY-MM-DD'}"
        
         if not self.request.user.is_superuser:
             if self.request.user.profile.access_level.name == 'SUPPLIER':
@@ -43,6 +44,9 @@ class CustomerOrderForm(forms.ModelForm):
     class Meta:
         model = CustomerOrder
         fields = ['customer', 'order_price']
+        
+    def __init__(self, *args, **kwargs):
+        super(CustomerOrderForm, self).__init__(*args, **kwargs)
 
 
 class CustomerForm(forms.ModelForm):

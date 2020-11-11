@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_custom_tags %}
+
+{% block page_content %}
+
+<div class="md-card-content">
+<div class="uk-width-large-7-10 uk-row-first">
+<div class="md-card md-card-single main-print" id="invoice" style="opacity: 1; transform: scale(1);">
+    <div id="invoice_preview">
+        <div class="md-card-toolbar">
+            <div class="md-card-toolbar-actions hidden-print">
+                <i class="md-icon material-icons" id="invoice_print"></i>
+                <div class="md-card-dropdown" data-uk-dropdown="{pos:'bottom-right'}">
+                    <i class="md-icon material-icons"></i>
+                    <div class="uk-dropdown uk-dropdown-small">
+                        <ul class="uk-nav">
+                            <!--<li><a href="#">Archive</a></li>-->
+                            <!--<li><a href="#" class="uk-text-danger">Remove</a></li>-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <h3 class="md-card-toolbar-heading-text large" id="invoice_name">
+                Invoice {{ object.order_reference}}
+            </h3>
+        </div>
+        <div class="md-card-content" style="">
+            <div class="uk-margin-medium-bottom">
+                <span class="uk-text-muted uk-text-small uk-text-italic">Date:</span> {{object.order_date}}
+                <br>
+                <!--<span class="uk-text-muted uk-text-small uk-text-italic">Due Date:</span> 02.01.2019-->
+            </div>
+            <div class="uk-grid" data-uk-grid-margin="">
+                <div class="uk-width-small-3-5 uk-row-first">
+                    <div class="uk-margin-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">From:</span>
+                        <address>
+                            <p><strong>{{ object.member.first_name }} {{ object.member.last_name }}</strong></p>
+                            <p>{{ object.member.phone_number }}</p>
+                            <p>{{ object.member.sub_county }}, {{ object.member.village }}</p>
+                        </address>
+                    </div>
+                    <div class="uk-margin-medium-bottom">
+                        <span class="uk-text-muted uk-text-small uk-text-italic">To:</span>
+                        <address>
+                            <p><strong>{{ object.member.cooperative }} </strong></p>
+                            
+                        </address>
+                    </div>
+                </div>
+                <div class="uk-width-small-2-5">
+                    <span class="uk-text-muted uk-text-small uk-text-italic">Order Total:</span>
+                    <p class="heading_b uk-text-success">{{ object.order_price}}</p>
+                    <!--<p class="uk-text-small uk-text-muted uk-margin-top-remove">Incl. VAT - $862.85</p>-->
+                </div>
+            </div>
+            <div class="uk-grid uk-margin-large-bottom">
+                <div class="uk-width-1-1">
+                    <table class="uk-table">
+                        <thead>
+                        <tr class="uk-text-upper">
+                            <th>Item</th>
+                            <th>Unit Price</th>
+                            <th class="uk-text-center">Quantity</th>
+                            <th class="uk-text-center">Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in object.get_orders %}
+                                <tr class="uk-table-middle">
+                                    <td class="uk-text-center">{{ item.item }}</td>
+                                    <td class="uk-text-center">{{ item.unit_price }}</td>
+                                    <td class="uk-text-center">{{ item.quantity }}</td>
+                                    <td class="uk-text-center">{{ item.price }}</td>
+                                </tr>
+                            {% endfor %}
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div id="invoice_form"></div>
+</div>
+</div>
+
+</div>
+
+{% endblock %}

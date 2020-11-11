@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_custom_tags %}
+
+{% block style %}
+    <!-- additional styles for plugins -->
+     <!-- kendo UI -->
+    <link rel="stylesheet" href="{% static 'bower_components/kendo-ui/styles/kendo.common-material.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bower_components/kendo-ui/styles/kendo.material.min.css' %}"/>
+    <style>
+        .k-combobox{
+            width: 100% !important;
+        }
+    </style>
+    
+{% endblock %}
+{% block page_content %}
+    <h3 class="heading_b uk-margin-bottom">Payment Form</h3>
+    <div class="md-card">
+        <div class="md-card-content">
+            <form method="POST" class="new-event-form" role="role" enctype="multipart/form-data">
+               {% csrf_token %}
+               {% if error %}<div class="uk-alert uk-alert-danger" data-uk-alert="">{{ error.errors }}<div>{{ error }}</div> </div>{% endif %}
+               {% include "error_template.html" with form=form %}
+                <div class="uk-grid" data-uk-grid-margin="">
+                    
+                {% for field in form %}
+                     <div class="uk-width-medium-1">
+                         <div class="md-input-wrapper">
+                             {% include "form/field.html" with field=field input_group_add_on='<i class="uk-input-group-icon uk-icon-building "></i>' %}
+                         </div>
+                     </div>
+                {% endfor %}
+                
+                <div class="uk-grid uk-text-right" data-uk-grid-margin="">
+                    <div class="uk-width-medium-1-1 uk-text-right">
+                        <button href="#" id="id_submit" class="md-btn md-btn-primary uk-margin-small-top">SUBMIT</button>
+                    </div>
+                </div>
+           </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+{% endblock %}
+    

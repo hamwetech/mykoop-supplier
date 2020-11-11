@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'dashboard',
     'supplier',
     'agrodealer',
-    'order'
+    'order',
+    'payment'
 ]
 
 MIDDLEWARE = [
