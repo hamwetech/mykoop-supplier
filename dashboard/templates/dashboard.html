@@ -4,14 +4,14 @@
 {% block page_content %}
 <!-- statistics (small charts) -->
 
-
+   {% if request.user.is_superuser %}
     <div class="uk-grid uk-grid-width-large-1-4 uk-grid-width-medium-1-2 uk-grid-medium uk-sortable sortable-handler " data-uk-sortable data-uk-grid-margin>
         <div>
             <div class="md-card">
                 <div class="md-card-content">
                     <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                     <span class="uk-text-muted uk-text-small">Supplier</span>
-                    <h2 class="uk-margin-remove">{{ union_count|intcomma }}</h2>
+                    <h2 class="uk-margin-remove">{{ suppliers|intcomma }}</h2>
                 </div>
             </div>
         </div>
@@ -21,32 +21,33 @@
                 <div class="md-card-content">
                     <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_orders peity_data">64/100</span></div>
                     <span class="uk-text-muted uk-text-small">Agro Dealer</span>
-                    <h2 class="uk-margin-remove">{{ cooperative_count|intcomma }}</h2>
+                    <h2 class="uk-margin-remove">{{ agro_dealers|intcomma }}</h2>
                 </div>
             </div>
-        </div>
-        
-        
+        </div> 
     </div>
-
+   {% endif %}
+   
     <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
         <div class="uk-width-medium-1-2">
             <div class="md-card">
                 <div class="md-card-content">
-                    <h4>Supplier Orders</h4>
+                    <h4>Agro Dealer Orders</h4>
                     <div class="uk-overflow-container">
                         <table class="uk-table">
                             <thead>
                                 <tr>
-                                    <th class="uk-text-nowrap">Union</th>
-                                    <th class="uk-text-nowrap">Cooperative</th>
+                                    <th class="uk-text-nowrap">Agro Dealer</th>
+                                    <th class="uk-text-nowrap">Order</th>
+                                    <th class="uk-text-nowrap">Date</th>
                                </tr>
                             </thead>
                             <tbody>
-                                {% for cp in coop_lst %}
+                                {% for i in supplier_orders %}
                                 <tr class="uk-table-middle">
-                                    <td class="uk-width-2-10 uk-text-nowrap">{{ cp.union }}</td>
-                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ cp.count|intcomma }} <b></td>
+                                    <td class="uk-width-2-10 uk-text-nowrap">{{ i.agro_dealer }}</td>
+                                    <td class="uk-width-2-10 uk-text-nowrap">{{ i.order_number }}</td>
+                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ i.create_date }} <b></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -55,31 +56,25 @@
                 </div>
             </div>
         </div>
+        
+        {% if  request.user.profile.access_level.name == 'AGRODEALER' or  request.user.is_superuser  %}
         <div class="uk-width-medium-1-2">
             <div class="md-card">
                 <div class="md-card-content">
-                    <h4>AgroDealer Orders</h4>
+                    <h4>Customer Orders</h4>
                     <div class="uk-overflow-container">
                         <table class="uk-table">
                             <thead>
                                 <tr>
-                                    <th class="uk-text-nowrap">Union</th>
-                                    <th class="uk-text-nowrap">Members</th>
-                                    <th class="uk-text-nowrap">Female</th>
-                                    <th class="uk-text-nowrap">Male</th>
-                                    <th class="uk-text-nowrap">Youth</th>
-                                    <th class="uk-text-nowrap">Refugess</th>
+                                    <th class="uk-text-nowrap">Customer</th>
+                                    <th class="uk-text-nowrap">Date</th>
                                </tr>
                             </thead>
                             <tbody>
-                                {% for mb in member_lst %}
+                                {% for o in order_items %}
                                 <tr class="uk-table-middle">
-                                    <td class="uk-width-2-10 uk-text-nowrap">{{ mb.union }}</td>
-                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ mb.count|intcomma }} <b></td>
-                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ mb.female|intcomma }} <b></td>
-                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ mb.male|intcomma }} <b></td>
-                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ mb.youth|intcomma }} <b></td>
-                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ mb.refugee|intcomma }} <b></td>
+                                    <td class="uk-width-2-10 uk-text-nowrap">{{ o.order.customer }}</td>
+                                    <td class="uk-width-2-10 uk-text-nowrap"><b>{{ o.create_date }} <b></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -88,6 +83,7 @@
                 </div>
             </div>
         </div>
+         {% endif %}
     </div>
     
     
