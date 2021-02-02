@@ -39,7 +39,7 @@ class AgroDealerListView(ExtraContext, ListView):
             if self.request.user.profile.access_level.name == "AGRODEALER":
                 qs = qs.filter(agrodealer=self.request.user.agro_dealer_user.agrodealer)
         return qs
-    
+
     def get_context_data(self, **kwargs):
         context = super(AgroDealerListView, self).get_context_data(**kwargs)
         return context
@@ -148,7 +148,18 @@ class AgroDealerCategoryUpdateView(ExtraContext, UpdateView):
 
 class AgroDealerCategoryListView(ExtraContext, ListView):
     model = AgroDealerCategory
-    extra_context = {'active': ['_union_prod', '_agrodealer_items']}    
+    extra_context = {'active': ['_union_prod', '_agrodealer_items']}
+
+    def get_queryset(self):
+        qs = super(AgroDealerCategoryListView, self).get_queryset()
+        if not self.request.user.is_superuser:
+            if self.request.user.profile.access_level.name == "AGRODEALER":
+                qs = qs.filter(agrodealer=self.request.user.agro_dealer_user.agrodealer)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(AgroDealerCategoryListView, self).get_context_data(**kwargs)
+        return context
 
 
 class AgroDealerItemCreateView(ExtraContext, CreateView):
@@ -156,6 +167,11 @@ class AgroDealerItemCreateView(ExtraContext, CreateView):
     form_class = AgroDealerItemForm
     extra_context = {'active': ['_union_prod', '_agrodealer_items']}
     success_url = reverse_lazy('agrodealer:item_list')
+
+    def get_form_kwargs(self):
+        kwargs = super(AgroDealerItemCreateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
 
 class AgroDealerItemUpdateView(ExtraContext, UpdateView):
@@ -168,6 +184,18 @@ class AgroDealerItemUpdateView(ExtraContext, UpdateView):
 class AgroDealerItemListView(ExtraContext, ListView):
     model = AgroDealerItem
     extra_context = {'active': ['_union_prod', '_agrodealer_items']}
+
+    def get_queryset(self):
+        qs = super(AgroDealerItemListView, self).get_queryset()
+        if not self.request.user.is_superuser:
+            if self.request.user.profile.access_level.name == "AGRODEALER":
+                print(self.request.user.agro_dealer_user.agrodealer)
+                qs = qs.filter(agrodealer=self.request.user.agro_dealer_user.agrodealer)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(AgroDealerItemListView, self).get_context_data(**kwargs)
+        return context
 
 
 def get_agrodealeritem_price(request, pk):

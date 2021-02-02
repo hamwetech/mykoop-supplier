@@ -165,6 +165,12 @@
                             <span class="menu_title">AgroDealers Items</span>
                         </a>
                     </li>
+                      <li {% if '_customer' in active %}class="current_section"{% endif %} title="Supplier">
+                        <a href="{% url 'order:customer_list' %}">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">Customers</span>
+                        </a>
+                    </li>
                     <li {% if '_agrodealer_order' in active %}class="current_section"{% endif %} title="Supplier">
                         <a href="{% url 'order:order_list' %}">
                             <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>

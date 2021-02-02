@@ -57,7 +57,7 @@ class AgroDealerCategory(models.Model):
     
 
 class AgroDealerItem(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     category = models.ForeignKey(AgroDealerCategory, on_delete=models.CASCADE)
     agrodealer = models.ForeignKey(AgroDealer, null=True, blank=True, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=20, decimal_places=2)
@@ -66,6 +66,7 @@ class AgroDealerItem(models.Model):
 
     class Meta:
         db_table = 'agrodealer_item'
+        unique_together = ['name', 'agrodealer', 'price']
 
     def __unicode__(self):
         return self.name

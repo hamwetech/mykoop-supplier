@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h2 class="heading_a uk-margin-bottom">Customer  List</h2>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'order:customer_create' %}" class="md-btn md-btn-success uk-float-right">Add Customer</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Reference</th>
+                        <th>Create Date</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item }}</td>
+                                <td>{{ item.customer_reference }}</td>
+                                <td>{{ item.create_date }}</td>
+                                <td>
+                                   <a href="{% url 'order:order_detail' item.id %}" class="md-btn md-btn-wave waves-effect waves-button uk-float-right">OPEN</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

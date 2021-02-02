@@ -58,6 +58,8 @@
                             <div class="uk-margin-medium-bottom">
                                 <b>STATUS:</b> {{ object.status }}
                                 {% if object.status == 'PENDING' %}
+                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('MAKEPAYMENT');" >MAKE PAYMENT</a>
+                                {% elif  object.status == 'PAID' or object.status == 'COD' %}
                                 <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CANCELLED');" >CANCELLED</a>
                                 <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CONFIRMED');">CONFIRMED</a>
                                 {% elif  object.status == 'CONFIRMED' %}
