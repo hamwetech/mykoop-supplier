@@ -4,6 +4,6 @@ from payment.views import *
 
 urlpatterns = [
     
-    url(r'list/$', PaymentMethodListView.as_view(), name='list')
+    url(r'list/$', TransactionListView.as_view(), name='list')
 ]
 

@@ -41,39 +41,29 @@
                     </div>
                     <div class="uk-grid" data-uk-grid-margin="">
                         <div class="uk-width-small-3-5">
-                            <div class="uk-margin-bottom">
-                                <span class="uk-text-muted uk-text-small uk-text-italic">From:</span>
-                                <address>
-                                    <p><strong>{{ object.supplier }}</strong></p>
-                                    <p>{{ object.address }}</p>
-                                </address>
-                            </div>
+
                             <div class="uk-margin-medium-bottom">
                                 <span class="uk-text-muted uk-text-small uk-text-italic">To:</span>
                                 <address>
-                                    <p><strong>{{ object.agro_dealer }}</strong></p>
-                                    <p>{{ object.address }}</p>
+                                    <p><strong>{{ object.customer }}</strong></p>
+                                    <p>{{ object.customer.address }}</p>
                                 </address>
                             </div>
                             <div class="uk-margin-medium-bottom">
-                                <b>STATUS:</b> {{ object.status }}
-                                {% if object.status == 'PENDING' %}
-                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('MAKEPAYMENT');" >MAKE PAYMENT</a>
-                                {% elif  object.status == 'PAID' %}
-                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CANCELLED');" >CANCELLED</a>
-                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CONFIRMED');">CONFIRMED</a>
-                                {% elif  object.status == 'CONFIRMED' %}
-                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('SHIPPED');">SHIPPED</a>
-                                {% elif  object.status == 'SHIPPED' %}
-                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('REJECTED');">REJECTED</a>
-                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('DELIVERED');">DELIVERED</a>
+                                <b>STATUS:</b> {{ object.status }} <br>
+                                <b>PAYMENT METHOD:</b> {{ object.payment_mode }}
+                                {% if object.is_paid %}
+                                    <br><b>PAID</b> <small>{{ object.payment_date }}</small>
                                 {% endif %}
-                            
                             </div>
+
                         </div>
                         <div class="uk-width-small-2-5">
                             <span class="uk-text-muted uk-text-small uk-text-italic">Total:</span>
                             <p class="heading_b uk-text-success">{{ object.order_price|intcomma }}</p>
+                            {% if object.status != 'PENDING' %}
+
+                            {% endif %}
                         </div>
                     </div>
                     <div class="uk-grid uk-margin-large-bottom">
@@ -85,6 +75,9 @@
                                     <th class="uk-text-center">Unit Price</th>
                                     <th class="uk-text-center">Quantity</th>
                                     <th class="uk-text-center">Total</th>
+                                    <th class="uk-text-center">Status</th>
+                                    <th class="uk-text-center">Status</th>
+                                    <th class="uk-text-center"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -103,6 +96,22 @@
                                         <td class="uk-text-center">
                                             {{ item.price|intcomma }}
                                         </td>
+                                        <td class="uk-text-center">
+                                            {{ item.status }}
+                                        </td>
+                                        <td class="uk-text-center">
+                                            {% if  item.status == 'PENDING' %}
+                                                {% if object.payment_mode == "MOBILE MONEY" %}
+                                                    {% if object.is_paid %}
+                                                        <a href="javascript:void(0)" class="md-btn md-btn-danger uk-float-right" onclick="changeItemStatus('CANCELLED', {{ item.id }});" >CANCELLED</a>
+                                                        <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeItemStatus('CONFIRMED', {{ item.id }});">CONFIRMED</a>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <a href="javascript:void(0)" class="md-btn md-btn-danger uk-float-right" onclick="changeItemStatus('CANCELLED', {{ item.id }});" >CANCELLED</a>
+                                                    <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeItemStatus('CONFIRMED', {{ item.id }});">CONFIRMED</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                     
@@ -110,11 +119,42 @@
                             </table>
                         </div>
                     </div>
-                    
+                    <div class="uk-grid" data-uk-grid-margin="">
+
+                    </div>
+
+
                 </div>
             </div>
         </div>
+
     </div>
+<div class="uk-grid">
+    <div class="uk-width-1-1">
+        <div class="uk-margin-medium-bottom">
+            {% if  object.status == 'PENDING' %}
+                {% if object.payment_mode == "MOBILE MONEY" %}
+                    {% if not object.is_paid %}
+                        <a href="{% url 'order:order_payment' object.id %}" class="md-btn md-btn-default uk-float-right">MAKE PAYMENT</a>
+                    {% else %}
+                        <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CANCELLED');" >CANCELLED ORDER</a>
+                        <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CONFIRMED');">CONFIRMED ORDER</a>
+                    {% endif %}
+                {% else %}
+                    <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CANCELLED');" >CANCELLED ORDER</a>
+                    <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('CONFIRMED');">CONFIRMED ORDER</a>
+                {% endif %}
+            {% elif  object.status == 'CONFIRMED' %}
+
+<!--            <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('SHIPPED');">SHIP ORDER</a>-->
+            {% elif  object.status == 'SHIPPED' %}
+<!--                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('REJECTED');">REJECTED</a>-->
+<!--                                <a href="javascript:void(0)" class="md-btn md-btn-default uk-float-right" onclick="changeStatus('DELIVERED');">DELIVERED</a>-->
+            {% endif %}
+
+        </div>
+    </div>
+</div>
    {% endblock %}
    
    {% block page_specific_scripts %}
@@ -133,6 +173,28 @@
                 console.log(textStatus)
             }
         });
+    }
+
+    function changeItemStatus(status, id)
+    {
+
+        UIkit.modal.confirm('By confirming, the supplier will be paid on item delivery', function(){
+            $.ajax('/order/item/status/',
+            {
+                method: 'post', // type of response data
+                dataType: 'json', // type of response data
+                timeout: 500,     // timeout milliseconds
+                data:{id: id, status: status, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function (data,status,xhr) {   // success callback function
+                    console.log(data)
+                   location.reload();
+                },
+                error: function (jqXhr, textStatus, errorMessage) { // error callback
+                    console.log(textStatus)
+                }
+            });
+         });
+
     }
    </script>
    

@@ -23,6 +23,8 @@ from supplier import urls as supplier_url
 from order import urls as order_url
 from userprofile import urls as profile_urls
 from apiv1 import urls as api_urls
+from payment import urls as payment_urls
+from account import urls as account_urls
 
 
 from dashboard.views import DashboardView
@@ -39,6 +41,8 @@ urlpatterns = [
     url(r'^supplier/', include(supplier_url, namespace='supplier')),
     url(r'^order/', include(order_url, namespace='order')),
     url(r'^profile/', include(profile_urls, namespace='profile')),
+    url(r'^payment/', include(profile_urls, namespace='payment')),
+    url(r'^account/', include(account_urls, namespace='account')),
     url(r'^apiv1/', include(api_urls, namespace='api')),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),

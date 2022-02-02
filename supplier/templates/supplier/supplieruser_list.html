@@ -18,6 +18,8 @@
                     <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Username</th>
+                        <th>Last Login</th>
                        <th></th>
                     </tr>
                     </thead>
@@ -25,8 +27,10 @@
                         {% for item in object_list %}
                             <tr>
                                 <td>{{ item.user.get_full_name }}</td>
+                                <td>{{ item.user.username }}</td>
+                                <td>{{ item.user.last_login_date }}</td>
                                 <td>
-                                     <a href="{% url 'supplier:supplier_edit' item.id %}"  class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a>
+
                                 </td>
                             </tr>
 

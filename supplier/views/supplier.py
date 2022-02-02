@@ -1,7 +1,7 @@
 import xlrd
 
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.db.models import Q, Count, Sum
 from django.utils.encoding import smart_str
@@ -12,7 +12,7 @@ from conf.utils import log_debug, log_error
 from ..models import Supplier, SupplierUser
 from ..forms import SupplierForm
 
-from userprofile.models import Profile
+from userprofile.models import Profile, AccessLevel
 from userprofile.forms import UserProfileForm, UserForm
 from django.contrib.auth.models import User
 
@@ -105,9 +105,9 @@ class SupplierUserCreate(View):
                         if not instance:
                             user.set_password(user.password)
                         user.save()
-                        profile_form.save(commit=False)
-                        profile_form.access_level = get_object_or_404(AccessLevel, name='SUPPLIER')
-                        profile_form.save()
+                        # profile_form.save(commit=False)
+                        user.profile.access_level = get_object_or_404(AccessLevel, name='SUPPLIER')
+                        user.profile.save()
                         inst_s = Supplier.objects.get(pk=supplier)
                         SupplierUser.objects.create(supplier=inst_s, user=user)
                         return redirect('supplier:supplier_user', supplier=supplier)

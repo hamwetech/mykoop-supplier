@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'supplier',
     'agrodealer',
     'order',
-    'payment'
+    'payment',
+    'account'
 ]
 
 MIDDLEWARE = [

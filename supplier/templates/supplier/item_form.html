@@ -11,13 +11,18 @@
                 <div class="uk-grid" data-uk-grid-margin>
                     <div class="uk-width-medium-1-2">
                         {% include "form/field.html" with field=form.name input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+                        {% include "form/field.html" with field=form.supplier_price input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+                        {% include "form/field.html" with field=form.mark_up_value input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+                        {% include "form/field.html" with field=form.commission input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+
                         {% include "form/field.html" with field=form.price input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
-                                    
+                        {% include "form/field.html" with field=form.is_active input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+                        {% include "form/field.html" with field=form.out_of_stock input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+
                     </div>
                     <div class="uk-width-medium-1-2">
                         {% include "form/field.html" with field=form.supplier input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
                         {% include "form/field.html" with field=form.category input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
-                        
                     </div>
                 </div>
                 <div class="uk-grid">
@@ -28,4 +33,25 @@
             </form>
         </div>
     </div>
+{% endblock %}
+{% block page_specific_scripts %}
+<script>
+    $('#id_supplier_price').on('change keyup', function(){
+        compute_price()
+    })
+    $('#id_mark_up_value').on('change keyup', function(){
+        compute_price()
+    })
+    $('#id_commission').on('change keyup', function(){
+        compute_price()
+    })
+
+    function compute_price(){
+        var supplier_price = $('#id_supplier_price').val()
+        var mark_up_value = $('#id_mark_up_value').val()
+        var commission = $('#id_commission').val()
+        var price = parseInt(supplier_price) + parseInt(mark_up_value) + parseInt(commission)
+        $('#id_price').val(price)
+    }
+</script>
 {% endblock %}

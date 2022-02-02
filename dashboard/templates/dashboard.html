@@ -32,12 +32,11 @@
         <div class="uk-width-medium-1-2">
             <div class="md-card">
                 <div class="md-card-content">
-                    <h4>Agro Dealer Orders</h4>
+                    <h4>Orders</h4>
                     <div class="uk-overflow-container">
                         <table class="uk-table">
                             <thead>
                                 <tr>
-                                    <th class="uk-text-nowrap">Agro Dealer</th>
                                     <th class="uk-text-nowrap">Order</th>
                                     <th class="uk-text-nowrap">Date</th>
                                </tr>
@@ -45,8 +44,7 @@
                             <tbody>
                                 {% for i in supplier_orders %}
                                 <tr class="uk-table-middle">
-                                    <td class="uk-width-2-10 uk-text-nowrap">{{ i.agro_dealer }}</td>
-                                    <td class="uk-width-2-10 uk-text-nowrap">{{ i.order_number }}</td>
+                                    <td class="uk-width-2-10 uk-text-nowrap">{{ i.order.order_number }}</td>
                                     <td class="uk-width-2-10 uk-text-nowrap"><b>{{ i.create_date }} <b></td>
                                 </tr>
                                 {% endfor %}

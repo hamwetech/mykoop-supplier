@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %}
+
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h2 class="heading_a uk-margin-bottom">Transaction Detail</h2>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'account:transaction_list' %}" class="md-btn md-btn-success uk-float-right"> < Back </a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <tr><td>Phone Number</td><td>{{ object.account }}</td></tr>
+                    <tr><td>Phone Number</td><td>{{ object.request_date }}</td></tr>
+                    <tr><td>Phone Number</td><td>{{ object.phone_number }}</td></tr>
+                    <tr><td>Balance Before</td><td>{{ object.balance_before }}</td></tr>
+                    <tr><td>Amount</td><td>{{ object.amount }}</td></tr>
+                    <tr><td>Balance After</td><td>{{ object.balance_after }}</td></tr>
+                    <tr><td>Reference</td><td>{{ object.reference }}</td></tr>
+                    <tr><td>Internal Reference</td><td>{{ object.internal_reference }}</td></tr>
+                    <tr><td>Transaction Type</td><td>{{ object.transaction_type }}</td></tr>
+                    <tr><td>Status</td><td>{{ object.status }}</td></tr>
+                    <tr><td>Category</td><td>{{ object.category }}</td></tr>
+                    <tr><td>Request</td><td>{{ object.request }}</td></tr>
+                    <tr><td>Response</td><td>{{ object.response }}</td></tr>
+                    <tr><td>Response</td><td>{{ object.provider_reference }}</td></tr>
+                    <tr><td>Response Date</td><td>{{ object.response_date }}</td></tr>
+                    <tr><td>Update Date</td><td>{{ object.update_date }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

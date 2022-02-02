@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %} 
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h2 class="heading_a uk-margin-bottom">Order List</h2>
+        </div>
+        <div class="uk-width-medium-1-2">
+            <a href="{% url 'order:create' %}" class="md-btn md-btn-success uk-float-right">Add Order</a>
+        </div>
+    </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Create Date</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in object_list %}
+                            <tr>
+                                <td>{{ item.order.order_number }}</td>
+                                <td>{{ item.item }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.price }}</td>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.create_date }}</td>
+                                <td>
+                                    {% if item.status == "CONFIRMED" %}
+                                        <a href="javascript:void(0)" class="md-btn md-btn-danger md-btn-wave waves-effect waves-button uk-float-right" onclick="changeItemStatus('CANCELLED', {{ item.id }});">CANCEL</a>
+                                        <a href="javascript:void(0)" class="md-btn md-btn-wave waves-effect waves-button uk-float-right" onclick="changeItemStatus('SHIPPED', {{ item.id }});">SHIP</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+ {% block page_specific_scripts %}
+   <script>
+    function changeItemStatus(status, id)
+    {
+        $.ajax('/order/item/status/',
+        {
+            method: 'post', // type of response data
+            dataType: 'json', // type of response data
+            timeout: 500,     // timeout milliseconds
+            data:{id: id, status: status, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function (data,status,xhr) {   // success callback function
+                console.log(data)
+               location.reload();
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback
+                console.log(textStatus)
+            }
+        });
+    }
+   </script>
+
+   {% endblock %}

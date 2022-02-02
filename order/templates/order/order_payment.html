@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form humanize %}
+
+{% block page_content %}
+<h3 class="heading_b uk-margin-bottom"></h3>
+ <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h2 class="heading_a uk-margin-bottom">Order Payment</h2>
+        </div>
+
+    </div>
+   <div class="md-card">
+
+        <div class="md-card-content">
+            <form method="POST" class="new-event-form" role="role">
+                {% csrf_token %}
+                <div class="uk-grid" data-uk-grid-margin>
+                     <div class="uk-width-medium-1-2">
+                         {% if form.errors  or errors %}
+                            <div class="uk-alert uk-alert-danger" data-uk-alert="">
+                               <a href="#" class="uk-alert-close uk-close"></a>
+                               {% if form.non_field_errors %}
+                                    {{ form.non_field_errors }}
+                               {% elif form.errors %}
+                                    {{ form.errors }}
+                               {% endif %}
+                           </div>
+                        {% endif %}
+                         <p>Customer: {{ object.customer }} </p>
+                         <p>Order Total: {{ object.order_price|intcomma }} </p>
+                        {% for field in form %}
+                            {% include "form/field.html" with field=field input_group_add_on='<i class="uk-input-group-icon uk-icon-key"></i>' %}
+                        {% endfor %}
+                     </div>
+                </div>
+                 <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <button type="submit" class="md-btn md-btn-success">INITIATE</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block page_specific_scripts %}
+<script>
+    $("#id_add_item").on("click", function(data){
+
+        var item = $('#id_item').val()
+        var quantity = $('#id_quantity').val()
+
+        if(item == ""){
+            alert('Please select an Item')
+            return
+        }
+
+        if(quantity == ""){
+            alert('Please specify the quantity')
+            return
+        }
+
+        $.ajax('/agrodealer/item/price/'+item+'/',
+        {
+            dataType: 'json', // type of response data
+            timeout: 500,     // timeout milliseconds
+            success: function (data,status,xhr) {   // success callback function
+                var cnt = $('.ItemInput').length + 1;
+                var total_price = data.price * quantity
+                $("#id_item_table tbody").append('<tr class="ItemInput" id="removeId'+cnt+'"><td><input type="hidden" name="item_id" value="'+data.id+'" id="id_item_id'+cnt+'">'+data.name+'</td><td><input type="hidden" name="unit_price" value="'+data.price+'" id="id_unit_price'+cnt+'">'+addCommas(data.price)+'</td><td><input type="hidden" name="item_quantity" value="'+quantity+'" id="id_item_quantity'+cnt+'">'+addCommas(quantity)+'</td><td><input type="hidden" name="total_price" value="'+total_price+'" id="id_total_price'+cnt+'">'+addCommas(total_price)+'</td><td><a href="#" onclick="removedClone(removeId'+cnt+');"><i class="material-icons clear">&#xe14c;</i></a></td></tr>');
+               itemClear()
+               totalPrice()
+            },
+            error: function (jqXhr, textStatus, errorMessage) { // error callback
+                console.log(textStatus)
+            }
+        });
+
+    })
+
+    function totalPrice(){
+         var cnt = $('.ItemInput').length;
+         var order_price = 0;
+         for(var i = 0; i < cnt; i++){
+            var totalprice = parseFloat($('#id_total_price'+(i+1)).val())
+            console.log("Count " + i)
+            console.log("Total Price " + totalprice)
+            order_price += totalprice
+         }
+         console.log("Order Price " + order_price)
+         $('#id_order_price_s').html(order_price)
+         $('#id_order_price').val(order_price)
+    }
+
+    function itemClear(){
+      $('#id_item').val('')
+      $('#id_quantity').val('')
+    }
+
+    function removedClone(id){
+          var r = confirm("Are you sure you want to delete?");
+          if (r == true) {
+              $(id).remove();
+          }
+      }
+
+    function addCommas(x) {
+        var parts = x.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parts.join(".");
+    }
+</script>
+{% endblock %}

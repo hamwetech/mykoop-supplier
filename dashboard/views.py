@@ -18,16 +18,13 @@ class DashboardView(TemplateView):
         context = super(DashboardView, self).get_context_data(**kwargs)
         suppliers = Supplier.objects.all()
         agro_dealer = AgroDealer.objects.all()
-        supplier_orders = SupplyOrder.objects.all()
+        supplier_orders = OrderItem.objects.all()
         customer_orders = CustomerOrder.objects.all()
         order_items = CustomerOrderItem.objects.all()
         
         if not self.request.user.is_superuser:
             if self.request.user.profile.access_level.name == "SUPPLIER":
-                supplier_orders = supplier_orders.filter(supplier=self.request.user.supplier_user.supplier)
-            if self.request.user.profile.access_level.name == "AGRODEALER":
-                supplier_orders = supplier_orders.filter(agro_dealer=self.request.user.agro_dealer_user.agrodealer)
-                order_items = order_items.filter(item__agrodealer=self.request.user.agro_dealer_user.agrodealer)
+                supplier_orders = supplier_orders.filter(item__supplier=self.request.user.supplier_user.supplier)
         context['suppliers'] = suppliers.count()
         context['agro_dealers'] = agro_dealer.count()
         context['supplier_orders'] = supplier_orders

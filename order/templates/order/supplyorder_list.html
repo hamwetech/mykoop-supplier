@@ -17,8 +17,8 @@
                 <table class="uk-table uk-table-striped">
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Supplier</th>
+                        <th>Customer</th>
+                        <th>Order Number</th>
                         <th>Price</th>
                         <th>Status</th>
                         <th>Create Date</th>
@@ -28,8 +28,8 @@
                     <tbody>
                         {% for item in object_list %}
                             <tr>
-                                <td>{{ item.agro_dealer }}</td>
-                                <td>{{ item.supplier }}</td>
+                                <td>{{ item.customer }}</td>
+                                <td>{{ item.order_number }}</td>
                                 <td>{{ item.order_price }}</td>
                                 <td>{{ item.status }}</td>
                                 <td>{{ item.create_date }}</td>

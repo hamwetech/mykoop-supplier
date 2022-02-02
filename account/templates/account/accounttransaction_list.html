@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load material_form %}
+{% load el_pagination_tags %}
+
+
+{% block page_content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-medium-1-2">
+            <h2 class="heading_a uk-margin-bottom">Transaction List</h2>
+        </div>
+        <div class="uk-width-medium-1-2">
+
+        </div>
+    </div>
+     <div class="uk-grid" data-uk-grid-margin>
+         <div class="uk-width-medium-1-1">
+         <div class="md-card uk-margin-medium-bottom">
+             <div class="md-card-content">
+                <div class="uk-overflow-container">
+                    <form action="" method="get">
+                        <div class="uk-grid uk-grid-width-large-1-4 uk-grid-width-medium-1-2 uk-grid-medium uk-sortable sortable-handler " data-uk-sortable data-uk-grid-margin>
+                            {% for field in form %}
+                                <div>
+                                    {% include "form/field.html" with field=field  %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                         <div class="uk-grid">
+                            <div class="uk-width-1-1">
+                                <button type="submit" class="md-btn md-btn-success"><i class="uk-input-group-icon uk-icon-search"></i> Search</button>
+                                <button type="submit" class="md-btn md-btn-default"><i class="uk-input-group-icon uk-icon-sync"></i> Refresh</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+             </div>
+         </div>
+         </div>
+     </div>
+    <div class="md-card uk-margin-medium-bottom">
+        <div class="md-card-content">
+            <div class="uk-overflow-container">
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Transaction Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Account</th>
+                        <th>Phone Number</th>
+                        <th>Reference</th>
+                        <th>Create Date</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        {% paginate object_list %}
+                        {% for item in object_list %}
+                            <tr>
+
+                                <td>{{ item.request_date }}</td>
+                                <td>{{ item.amount }}</td>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.account }}</td>
+                                <td>{{ item.phone_number }}</td>
+                                <td>{{ item.reference }}</td>
+                                <td>{{ item.create_date }}</td>
+                                <td>
+                                    <a href="{% url 'account:transaction_detail' item.id %}" class="md-btn md-btn-default uk-float-right">Detail</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+                {% show_pages %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

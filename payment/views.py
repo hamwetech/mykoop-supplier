@@ -14,10 +14,9 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, View
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from payment.models import MobileMoneyRequest
+from payment.models import Transaction
 from payment.utils import payment_transction
 from payment.PaymentTransaction import PaymentTransaction
-from coop.models import Cooperative, CooperativeMember
 
 from conf.utils import generate_alpanumeric, log_debug, log_error
 
@@ -31,13 +30,13 @@ class ExtraContext(object):
         return context
     
 
-class MobileMoneyRequestListView(ExtraContext, ListView):
-    model = MobileMoneyRequest
+class TransactionListView(ExtraContext, ListView):
+    model = Transaction
     ordering = ['-payment_date']
     extra_context = {'active': ['_payment']}
     
     def get_queryset(self):
-        queryset = super(MobileMoneyRequestListView, self).get_queryset()
+        queryset = super(TransactionListView, self).get_queryset()
         
         if not self.request.user.profile.is_union():
             if not self.request.user.profile.is_partner():
@@ -66,34 +65,5 @@ class MobileMoneyRequestListView(ExtraContext, ListView):
         return queryset
     
     def get_context_data(self, **kwargs):
-        context = super(MobileMoneyRequestListView,self).get_context_data(**kwargs)
-        context['form'] = PaymentFilterForm(self.request.GET)
+        context = super(TransactionListView,self).get_context_data(**kwargs)
         return context
-        
-
-class PaymentTransactionDetail(ExtraContext, DetailView):
-    model = MobileMoneyRequest
-   
-    
-class PaymentTransactionCreateView(ExtraContext, CreateView):
-    model = MobileMoneyRequest
-    form_class = MemberPaymentForm
-    extra_context = {'active': ['_payment']}
-    success_url = reverse_lazy('payment:list')
-    
-    def form_valid(self, form):
-        form.instance.transaction_reference = generate_alpanumeric('60', 10)
-        form.instance.creator = self.request.user
-        msisdn = form.instance.member.phone_number
-        amount = form.instance.amount
-        form.instance.status = 'PENDING'
-        trx = form.save()
-        
-        pt = PaymentTransaction(form.instance.member, self.request)
-        pt.transaction_request(payment_request=trx)
-
-        
-        return super(PaymentTransactionCreateView, self).form_valid(form)
-
-
-
