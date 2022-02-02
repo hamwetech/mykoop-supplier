@@ -41,7 +41,7 @@ class PaymentTransaction:
             
             reference = mm_request.reference
             res = payment_transction(phone_number, amount, reference)
-            res['transactionStatus'] = "SUCCESSFUL" # Delete once done testing
+            # res['transactionStatus'] = "SUCCESSFUL" # Delete once done testing
             status = res['status']
             if res['status'] == 'ERROR':
                 status = 'FAILED'

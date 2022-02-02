@@ -11,8 +11,8 @@ from conf.utils import log_debug, log_error, generate_alpanumeric
 
 
 def payment_transction(msisdn, amount, reference):
-        if True:
-            return {"status": "OK", "transactionStatus": "SUCCESSFUL", "transactionReference": generate_alpanumeric()}
+        # if True:
+        #     return {"status": "OK", "transactionStatus": "SUCCESSFUL", "transactionReference": generate_alpanumeric()}
 
         msisdn = msisdn
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
