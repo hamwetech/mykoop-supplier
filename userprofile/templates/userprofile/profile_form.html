@@ -8,18 +8,18 @@
         <div class="md-card-content">
             {% if user_form.errors or  profile_form.errors or errors %}
                 <div class="uk-alert uk-alert-danger" data-uk-alert="">
-                   <a href="#" class="uk-alert-close uk-close"></a>
-                   {% if user_form.non_field_errors %}
-                    {{ user_form.non_field_errors }}
-                   {% elif user_form.errors %}
-                   {{ user_form.errors }}
-                   {% elif profile_form.non_field_errors %}
-                   {{ profile_form.non_field_errors }}
-                   {% elif profile_form.errors %}
-                   {{profile_form.errors}}
-                   {% elif errors %}
-                   {{ errors }}
-                   {% endif %}
+                    <a href="#" class="uk-alert-close uk-close"></a>
+                    {% if user_form.non_field_errors %}
+                        {{ user_form.non_field_errors }}
+                    {% elif user_form.errors %}
+                        {{ user_form.errors }}
+                    {% elif profile_form.non_field_errors %}
+                        {{ profile_form.non_field_errors }}
+                    {% elif profile_form.errors %}
+                        {{profile_form.errors}}
+                    {% elif errors %}
+                        {{ errors }}
+                    {% endif %}
                </div>
             {% endif %}
             
@@ -37,6 +37,7 @@
                     <div class="uk-width-medium-1-2">
                         {% include "form/field.html" with field=user_form.first_name input_group_add_on='<i class="uk-input-group-icon uk-icon-user-plus"></i>' %}
                         {% include "form/field.html" with field=user_form.last_name input_group_add_on='<i class="uk-input-group-icon uk-icon-user-plus"></i>' %}
+                        {% include "form/field.html" with field=profile_form.platform input_group_add_on='<i class="uk-input-group-icon uk-icon-map"></i>' %}
                         {% include "form/field.html" with field=profile_form.msisdn input_group_add_on='<i class="uk-input-group-icon uk-icon-phone"></i>' %}
                         {% include "form/field.html" with field=user_form.email  input_group_add_on='<i class="uk-input-group-icon uk-icon-envelope"></i>' %}
                         {% include "form/field.html" with field=profile_form.access_level  input_group_add_on='<i class="uk-input-group-icon uk-icon-level-up"></i>' %}

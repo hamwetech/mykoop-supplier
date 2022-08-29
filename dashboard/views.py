@@ -23,8 +23,9 @@ class DashboardView(TemplateView):
         order_items = CustomerOrderItem.objects.all()
         
         if not self.request.user.is_superuser:
-            if self.request.user.profile.access_level.name == "SUPPLIER":
-                supplier_orders = supplier_orders.filter(item__supplier=self.request.user.supplier_user.supplier)
+            if self.request.user.profile.access_level:
+                if self.request.user.profile.access_level.name == "SUPPLIER":
+                    supplier_orders = supplier_orders.filter(item__supplier=self.request.user.supplier_user.supplier)
         context['suppliers'] = suppliers.count()
         context['agro_dealers'] = agro_dealer.count()
         context['supplier_orders'] = supplier_orders

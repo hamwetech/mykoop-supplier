@@ -95,6 +95,7 @@
                     </a>
                     <ul>
                         <li {% if '__user' in active %}class="act_item"{% endif %}><a href="{% url 'profile:user_list' %}">User</a></li>
+                        <li {% if '__platform' in active %}class="act_item"{% endif %}><a href="{% url 'profile:platform_list' %}">Platform</a></li>
                         <li {% if '__acess_level' in active %}class="act_item"{% endif %}><a href="{% url 'profile:access_list' %}">Access Level</a></li>
                         <li {% if '__group' in active %}class="act_item"{% endif %}><a href="{% url 'profile:group_list' %}">Group Permission</a></li>
                         <li {% if '__access_group' in active %}class="act_item"{% endif %}><a href="{% url 'profile:ag_list' %}">Access Group</a></li>
