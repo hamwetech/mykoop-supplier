@@ -13,8 +13,8 @@ from django.views.generic import ListView, View, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 
 from conf.utils import log_debug, log_error
-from conf.models import District, County, SubCounty, Parish, Village, PaymentMethod, MessageTemplates
-from conf.forms import DistrictForm, CountyForm, SubCountyForm, VillageForm, PaymentMethodForm, UploadLocation,\
+from conf.models import Region, District, County, SubCounty, Parish, Village, PaymentMethod, MessageTemplates
+from conf.forms import RegionForm, DistrictForm, CountyForm, SubCountyForm, VillageForm, PaymentMethodForm, UploadLocation,\
 MessageTemplatesForm
 
 class ExtraContext(object):
@@ -28,10 +28,29 @@ class ExtraContext(object):
         return context
 
 
+class RegionListView(ExtraContext, ListView):
+    model = Region
+    extra_context = {'active': ['_config', '__region']}
+
+
+class RegionCreateView(ExtraContext, CreateView):
+    model = Region
+    form_class = RegionForm
+    extra_context = {'active': ['_config', '__region']}
+    success_url = reverse_lazy('conf:region_list')
+
+
+class RegionUpdateView(ExtraContext, UpdateView):
+    model = Region
+    form_class = RegionForm
+    extra_context = {'active': ['_config', '__region']}
+    success_url = reverse_lazy('conf:region_list')
+
+
 class DistrictListView(ExtraContext, ListView):
     model = District
     extra_context = {'active': ['_config', '__district']}
-    
+
 
 class DistrictCreateView(ExtraContext, CreateView):
     model = District
@@ -98,6 +117,7 @@ class VillageListView(ExtraContext, ListView):
         subcounty = self.request.GET.get('subcounty')
         county = self.request.GET.get('county')
         district = self.request.GET.get('district')
+        region = self.request.GET.get('region')
         queryset = Parish.objects.all()
         if village:
             queryset = queryset.filter(name=query)
@@ -170,6 +190,7 @@ class LocationUploadView(ExtraContext, View):
             path = f.temporary_file_path()
             index = int(form.cleaned_data['sheet'])-1
             startrow = int(form.cleaned_data['row'])-1
+            region_col = int(form.cleaned_data['region_col'])
             district_col = int(form.cleaned_data['district_col'])
             county_col = int(form.cleaned_data['county_col'])
             sub_county_col = int(form.cleaned_data['sub_county_col'])
@@ -185,36 +206,45 @@ class LocationUploadView(ExtraContext, View):
                 try:
                     row = sheet.row(i)
                     rownum = i+1
+
+                    region = smart_str(row[region_col].value).strip()
+                    if not re.search('^[A-Z\s\(\)\-\.]+$', region, re.IGNORECASE):
+                        if (i+1) == sheet.nrows: break
+                        data['errors'] = '"%s" is not a valid Region (row %d)' % \
+                        (region, i+1)
+                        return render(request, self.template_name, {'active': 'system', 'form':form, 'error': data})
+
+
                     district = smart_str(row[district_col].value).strip()
-        
                     if not re.search('^[A-Z\s\(\)\-\.]+$', district, re.IGNORECASE):
                         if (i+1) == sheet.nrows: break
                         data['errors'] = '"%s" is not a valid District (row %d)' % \
                         (district, i+1)
                         return render(request, self.template_name, {'active': 'system', 'form':form, 'error': data})
-        
+
+
                     county = smart_str(row[county_col].value).strip()
-        
                     if not re.search('^[A-Z\s\(\)\-\.]+$', county, re.IGNORECASE):
                         data['errors'] = '"%s" is not a valid County (row %d)' % \
                         (county, i+1)
                         return render(request, self.template_name, {'active': 'system', 'form':form, 'error': data})
-                    
+
+
                     sub_county = smart_str(row[sub_county_col].value).strip()
-        
                     if not re.search('^[A-Z\s\(\)\-\.]+$', sub_county, re.IGNORECASE):
                         data['errors'] = '"%s" is not a valid Sub County (row %d)' % \
                         (sub_county, i+1)
                         return render(request, self.template_name, {'active': 'system', 'form':form, 'error': data})
-                    
+
+
                     parish = smart_str(row[parish_col].value).strip()
-        
                     if not re.search('^[A-Z\s\(\)\-\.]+$', parish, re.IGNORECASE):
                         data['errors'] = '"%s" is not a valid Parish (row %d)' % \
                         (parish, i+1)
                         return render(request, self.template_name, {'active': 'system', 'form':form, 'error': data})
-                    
-                    q = {'district': district, 'county': county,'sub_county':sub_county, 'parish': parish}
+
+
+                    q = {'region': region, 'district': district, 'county': county,'sub_county':sub_county, 'parish': parish}
                     locations.append(q)
              
                 except Exception as err:
@@ -223,22 +253,35 @@ class LocationUploadView(ExtraContext, View):
             try:
                 with transaction.atomic():
                     if clear_data:
+                        Region.objects.all().delete()
                         District.objects.all().delete()
                         County.objects.all().delete()
                         SubCounty.objects.all().delete()
+                    rcount = 0
                     dcount = 0
                     ccount = 0
                     sccount = 0
                     pcount = 0
                     for d in locations:
+                        region = d['region'].title()
                         district = d['district'].title()
                         county = d['county'].title()
                         sub_county = d['sub_county'].title()
                         parish = d['parish'].title()
                         
+                        ri = None
                         di = None
                         ci = None
                         
+                        rq = Region.objects.filter(name__iexact = region)
+                        if rq.exists():
+                            ri = rq[0]
+                        else:
+                            ri = Region(name = region)
+                            ri.save()
+                            rcount += 1
+
+
                         dq = District.objects.filter(name__iexact = district)
                         if dq.exists():
                             di = dq[0]
@@ -246,8 +289,8 @@ class LocationUploadView(ExtraContext, View):
                             di = District(name = district)
                             di.save()
                             dcount += 1
-                            
-                        
+
+
                         cq = County.objects.filter(district=di, name__iexact = county)
                         if not cq.exists():
                             ci = County(district=di, name=county)
@@ -255,6 +298,8 @@ class LocationUploadView(ExtraContext, View):
                             ccount += 1
                         else:
                             ci = cq[0]
+
+
                         scq = SubCounty.objects.filter(county=ci, name__iexact=sub_county)
                         if not scq.exists():
                             sci = SubCounty(county=ci, name=sub_county)
@@ -262,15 +307,17 @@ class LocationUploadView(ExtraContext, View):
                             sccount += 1
                         else:
                             sci = scq[0]
-                        
+
+
                         parishq = Parish.objects.filter(sub_county=sci, name__iexact=parish)
-                        
                         if not parishq.exists():
                             p = Parish(sub_county=sci, name=parish)
                             p.save()
                             pcount += 1
-                    # messages.success(self.request, "%s District added, %s County's added, %s Sub-County's added" % (dcount, ccount, sccount))
-                    return redirect('conf:district_list')
+
+
+                    # messages.success(self.request, "%s Region added, %s District added, %s County's added, %s Sub-County's added" % (rcount, dcount, ccount, sccount))
+                    return redirect('conf:region_list')
             except Exception as e:
                 log_error()
                    

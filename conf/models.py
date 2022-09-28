@@ -3,7 +3,20 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+class Region(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    create_date = models.DateTimeField(auto_now=True)
+    update_date = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'region'
+        
+    def __unicode__(self):
+        return self.name
+
+
 class District(models.Model):
+    region = models.ForeignKey(Region, null=True, blank=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=50, unique=True)
     create_date = models.DateTimeField(auto_now=True)
     update_date = models.DateTimeField(auto_now=True)

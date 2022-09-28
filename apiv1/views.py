@@ -22,7 +22,6 @@ from django.forms.models import model_to_dict
 from django.contrib.auth import authenticate
 
 from userprofile.models import Profile
-from conf.models import District, County, SubCounty, Village
 from supplier.models import Supplier, Item
 from apiv1.serializers import *
 

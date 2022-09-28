@@ -1,12 +1,18 @@
 from django import forms
 
-from conf.models import District, County, SubCounty, Village, Parish, PaymentMethod, MessageTemplates
+from conf.models import Region, District, County, SubCounty, Village, Parish, PaymentMethod, MessageTemplates
 from conf.utils import bootstrapify
+
+class RegionForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = ['name']
+
 
 class DistrictForm(forms.ModelForm):
     class Meta:
         model = District
-        fields = ['name']
+        fields = ['region', 'name']
 
 
 class CountyForm(forms.ModelForm):
@@ -58,6 +64,7 @@ class UploadLocation(forms.Form):
     uploadfile = forms.FileField(label="Excel File", max_length=100)
     sheet = forms.ChoiceField(label="Sheet", choices=sheetChoice, widget=forms.Select(attrs={'class':'form-control'}))
     row = forms.ChoiceField(label="Row", choices=rowchoices, widget=forms.Select(attrs={'class':'form-control'}))
+    region_col = forms.ChoiceField(label='Region Column', initial=0, choices=choices, widget=forms.Select(attrs={'class':'form-control'}), help_text='The column containing the Region')
     district_col = forms.ChoiceField(label='District Column', initial=0, choices=choices, widget=forms.Select(attrs={'class':'form-control'}), help_text='The column containing the District')
     county_col = forms.ChoiceField(label='County Column', initial=1, choices=choices, widget=forms.Select(attrs={'class':'form-control'}), help_text='The column containing the County')
     sub_county_col = forms.ChoiceField(label='Sub County Column', initial=2, choices=choices, widget=forms.Select(attrs={'class':'form-control'}), help_text='The column containing the Sub County')
@@ -69,7 +76,8 @@ class MessageTemplatesForm(forms.ModelForm):
     class Meta:
         model = MessageTemplates
         exclude = ['create_date', 'update_date']
-    
+
+bootstrapify(RegionForm)    
 bootstrapify(DistrictForm)
 bootstrapify(SubCountyForm)
 bootstrapify(VillageForm)
