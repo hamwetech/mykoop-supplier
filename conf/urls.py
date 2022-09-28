@@ -4,6 +4,9 @@ from conf.views import *
 
 urlpatterns = [
      url(r'sms/template/$', MessageTemplatesView.as_view(), name='sms_template'),
+     url(r'region/list/$', RegionListView.as_view(), name='region_list'),
+     url(r'region/create/$', RegionCreateView.as_view(), name='region_create'),
+     url(r'region/(?P<pk>[\w]+)/$', RegionUpdateView.as_view(), name='region_edit'),
      url(r'district/list/$', DistrictListView.as_view(), name='district_list'),
      url(r'district/create/$', DistrictCreateView.as_view(), name='district_create'),
      url(r'district/(?P<pk>[\w]+)/$', DistrictUpdateView.as_view(), name='district_edit'),

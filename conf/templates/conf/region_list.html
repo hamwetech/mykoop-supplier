@@ -5,10 +5,10 @@
 {% block page_content %}
     <div class="uk-grid" data-uk-grid-margin>
         <div class="uk-width-medium-1-2">
-            <h4 class="heading_a uk-margin-bottom">District</h4>
+            <h4 class="heading_a uk-margin-bottom">Region</h4>
         </div>
         <div class="uk-width-medium-1-2">
-            <a href="{% url 'conf:district_create' %}" class="md-btn md-btn-success uk-float-right">Add District</a>
+            <a href="{% url 'conf:region_create' %}" class="md-btn md-btn-success uk-float-right">Add Region</a>
         </div>
     </div>
     <div class="md-card uk-margin-medium-bottom">
@@ -18,7 +18,7 @@
                     <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Region</th>
+                       
                         <th></th>
                     </tr>
                     </thead>
@@ -26,8 +26,8 @@
                         {% for item in object_list %}
                             <tr>
                                 <td>{{ item.name }}</td>
-                                <td>{{ item.region }}</td>
-                                <td><a href="{% url 'conf:district_edit' item.id %}" class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a></td>
+                                
+                                <td><a href="{% url 'conf:region_edit' item.id %}" class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a></td>
                             </tr>
                             
                         {% endfor %}

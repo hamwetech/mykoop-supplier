@@ -39,23 +39,27 @@
                         <div class="uk-width-medium-1-1">
                             <div class="uk-input-group">
                                 <div class="uk-grid">
-                                <div class="uk-width-medium-1-2">
-                                    <label>Village:</label>
-                                    <input type="text" name="village" class="md-input" />
+                                    <div class="uk-width-medium-1-2">
+                                        <label>Village:</label>
+                                        <input type="text" name="village" class="md-input" />
+                                    </div>
+                                    <div class="uk-width-medium-1-2">
+                                        <label>Sub Country:</label>
+                                        <input type="text" name="subcounty" class="md-input" />
+                                    </div>
+                                    <div class="uk-width-medium-1-2">
+                                        <label>County:</label>
+                                        <input type="text" name="county" class="md-input" />
+                                    </div>
+                                    <div class="uk-width-medium-1-2">
+                                        <label>District:</label>
+                                        <input type="text" name="district" class="md-input" />
+                                    </div>
+                                    <div class="uk-width-medium-1-2">
+                                        <label>Region:</label>
+                                        <input type="text" name="region" class="md-input" />
+                                    </div>
                                 </div>
-                                <div class="uk-width-medium-1-2">
-                                    <label>Sub Country:</label>
-                                    <input type="text" name="subcounty" class="md-input" />
-                                </div>
-                                <div class="uk-width-medium-1-2">
-                                    <label>County:</label>
-                                    <input type="text" name="county" class="md-input" />
-                                </div>
-                                <div class="uk-width-medium-1-2">
-                                    <label>District:</label>
-                                    <input type="text" name="district" class="md-input" />
-                                </div>
-                                 </div>
                                 <span class="uk-input-group-addon">
                                     <button type="submit" class="md-btn"><i class="material-icons">search</i></button>
                                 </span>
@@ -76,6 +80,7 @@
                         <th>Sub County</th>
                        <th>County</th>
                        <th>District</th>
+                       <th>Region</th>
                        <th></th>
                     </tr>
                     </thead>
@@ -87,6 +92,7 @@
                                 <td>{{ item.sub_county }}</td>
                                 <td>{{ item.sub_county.county }}</td>
                                 <td>{{ item.sub_county.county.district }}</td>
+                                <td>{{ item.sub_county.county.district.region }}</td>
                                
                                 <td>
                                      <a href="{% url 'conf:subcounty_edit' item.id %}"  class="uk-float-right"><i class="md-icon material-icons">&#xE254;</i></a>
